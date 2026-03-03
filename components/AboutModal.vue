@@ -73,8 +73,12 @@
             </a>
           </div>
 
+        </div>
+
+        <!-- Footer -->
+        <div class="px-5 pb-5 pt-3 border-t border-isf-tinted flex items-end justify-between gap-4 flex-shrink-0">
           <!-- Build & data info -->
-          <div class="border-t border-isf-tinted pt-4 text-xs text-isf-blue space-y-1">
+          <div class="text-xs text-isf-blue space-y-1">
             <div>
               <span class="font-semibold">code:</span> <a :href="`https://github.com/IndivisibleSFOrg/no-kings-countdown/tree/${buildInfo.ref}`" target="_blank" rel="noopener noreferrer" class="underline hover:text-isf-blue transition-colors">{{ buildInfo.ref }}</a>
               @
@@ -96,12 +100,8 @@
               </button>
             </div>
           </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="px-5 pb-5 flex justify-end flex-shrink-0">
           <button
-            class="bg-isf-blue hover:bg-isf-blue-dark text-white font-semibold text-sm px-4 py-2 rounded-lg transition-colors"
+            class="bg-isf-blue hover:bg-isf-blue-dark text-white font-semibold text-sm px-4 py-2 rounded-lg transition-colors flex-shrink-0"
             @click="emit('close')"
           >
             Close
