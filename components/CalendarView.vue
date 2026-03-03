@@ -19,6 +19,7 @@
             <ActionCard
               v-if="getActionForDate(dateInfo.date, dateInfo.month)"
               :action="getActionForDate(dateInfo.date, dateInfo.month)!"
+              :allow-modal="true"
             />
             <div v-else class="calendar-cell-empty flex items-start p-1.5">
               <span class="text-xs text-isf-slate font-medium leading-none">{{ dateInfo.month }}/{{ dateInfo.date }}</span>

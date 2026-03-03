@@ -59,11 +59,10 @@
               class="font-bold text-isf-navy text-lg leading-snug flex-1"
               v-html="renderInlineMarkdown(action.headline)"
             />
-            <!-- Share -->
+            <!-- Share — always available for revealed actions -->
             <button
               id="tour-action-share"
               class="flex-shrink-0 text-isf-slate hover:text-isf-red transition-colors p-0.5 mt-0.5"
-              :class="(isComplete(action.date) || isDev) ? '' : 'invisible pointer-events-none'"
               aria-label="Share"
               @click="shareAction"
             >
@@ -148,7 +147,6 @@ const props = defineProps<Props>();
 const emit = defineEmits<{ close: [] }>();
 
 const { isComplete, toggleComplete } = useActionCompletion();
-const { isDevMode: isDev } = useDevMode();
 const { trackShareDetail, trackCompleteAction } = useAnalytics();
 const { startModalTour } = useModalTour();
 

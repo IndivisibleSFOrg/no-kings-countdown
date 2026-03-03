@@ -65,7 +65,7 @@
     <DevModeToggle />
 
     <!-- Action detail overlay -->
-    <ActionDetails v-if="selectedAction" :action="selectedAction" @close="closeDetail" />
+    <ActionModal v-if="selectedAction" :action="selectedAction" @close="closeDetail" />
 
 
   </div>
@@ -75,7 +75,7 @@
 import { ref, computed, onMounted, onUnmounted, provide, watch, nextTick } from 'vue';
 import type { ActionItem } from '~/composables/googleSheets';
 import { formatDateKey } from '~/composables/dateHelpers';
-import ActionDetails from './ActionDetails.vue';
+import ActionModal from './ActionModal.vue';
 import ScoreDisplay from './ScoreDisplay.vue';
 
 interface Props {

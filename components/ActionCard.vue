@@ -192,6 +192,7 @@ interface Props {
   action: ActionItem;
   showDayName?: boolean;
   dateLabelSize?: string;
+  allowModal?: boolean;
 }
 
 const props = defineProps<Props>();
