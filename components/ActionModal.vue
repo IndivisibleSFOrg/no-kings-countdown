@@ -15,7 +15,7 @@
         :aria-label="action.headline"
       >
         <!-- Image header -->
-        <div class="relative aspect-square w-full flex-shrink-0">
+        <div class="relative aspect-square w-full flex-shrink-0 max-h-[40vh]">
           <img
             :src="action.image_back.image_url || action.image_front.image_url || defaultImage"
             :alt="action.headline"
@@ -53,7 +53,7 @@
         </div>
 
         <!-- Scrollable content -->
-        <div class="aspect-square w-full flex-shrink-0 overflow-y-auto p-5 flex flex-col gap-4">
+        <div class="flex-1 min-h-0 overflow-y-auto p-5 flex flex-col gap-4">
           <div class="flex items-start gap-2">
             <h2
               class="font-bold text-isf-navy text-lg leading-snug flex-1"
