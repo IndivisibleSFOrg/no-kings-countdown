@@ -1,9 +1,6 @@
 import { driver } from 'driver.js';
 import type { Config, DriveStep } from 'driver.js';
 
-const STORAGE_KEY_HOME = 'tourSeen_home';
-const STORAGE_KEY_MODAL = 'tourSeen_modal';
-
 const baseConfig: Partial<Config> = {
   showProgress: true,
   animate: true,
@@ -19,9 +16,10 @@ const baseConfig: Partial<Config> = {
 
 /** Tour for the main landing page. Call inside onMounted. */
 export function useHomeTour() {
+  const { settings, set } = useSettings();
+
   const startHomeTour = () => {
-    if (typeof localStorage === 'undefined') return;
-    if (localStorage.getItem(STORAGE_KEY_HOME)) return;
+    if (settings.value.tourSeenHome) return;
 
     const steps: DriveStep[] = [
       {
@@ -76,7 +74,7 @@ export function useHomeTour() {
       ...baseConfig,
       steps: validSteps,
       onDestroyed: () => {
-        localStorage.setItem(STORAGE_KEY_HOME, '1');
+        set('tourSeenHome', true);
       },
     });
 
@@ -88,11 +86,12 @@ export function useHomeTour() {
 
 /** Tour for the action-detail modal. Call inside onMounted of ActionDetails. */
 export function useModalTour() {
+  const { settings, set } = useSettings();
+
   const startModalTour = () => {
-    if (typeof localStorage === 'undefined') return;
-    if (localStorage.getItem(STORAGE_KEY_MODAL)) return;
+    if (settings.value.tourSeenModal) return;
     // Don't overwhelm new users — wait until the home tour has been seen
-    if (!localStorage.getItem(STORAGE_KEY_HOME)) return;
+    if (!settings.value.tourSeenHome) return;
 
     const allSteps: DriveStep[] = [
       {
@@ -137,7 +136,7 @@ export function useModalTour() {
       ...baseConfig,
       steps: validSteps,
       onDestroyed: () => {
-        localStorage.setItem(STORAGE_KEY_MODAL, '1');
+        set('tourSeenModal', true);
       },
     });
 
