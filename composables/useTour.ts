@@ -27,7 +27,7 @@ export function useHomeTour() {
         popover: {
           title: 'Welcome to No Kings Countdown',
           description:
-            'Each day unlocks a civic action you can take in under 15 minutes. Complete them, track your score, and help build the movement.',
+            'Each day unlocks a civic action you can take in under 15 minutes. Complete them, track your progress, and help build the movement.',
           side: 'bottom',
           align: 'start',
         },
@@ -35,9 +35,9 @@ export function useHomeTour() {
       {
         element: '#tour-score',
         popover: {
-          title: 'Track Your Progress',
+          title: 'See and Share Your Progress',
           description:
-            'Your completed action count is shown here. The dot grid gives you a bird\'s-eye view of the whole campaign at a glance.',
+            'Your completed action count is shown here. The dot grid gives you a bird\'s-eye view of the whole campaign at a glance. Your progress is tracked only on your device — no personal data is collected or shared. Share your progress with friends to inspire others to join the movement!',
           side: 'bottom',
           align: 'end',
         },
@@ -47,19 +47,9 @@ export function useHomeTour() {
         popover: {
           title: 'Daily Actions',
           description:
-            'Browse the calendar — click any unlocked day to see the full action, follow the link, and mark it complete. On mobile you\'ll see a card grid instead.',
+            'Browse the calendar — cards will be revealed each day leading up to the No Kings March on March 28, 2026. Click on any revealed cards to see details and take action.',
           side: 'top',
           align: 'center',
-        },
-      },
-      {
-        element: '#tour-share-progress',
-        popover: {
-          title: 'Spread the Word',
-          description:
-            'Share your progress with friends to inspire others to join the movement.',
-          side: 'bottom',
-          align: 'end',
         },
       },
       {
@@ -68,6 +58,16 @@ export function useHomeTour() {
           title: 'Start Here: Sign Up for No Kings 3',
           description:
             'March 1 is the single most important action in the whole countdown — signing up for the No Kings March on March 28. If you do only one thing, make it this.',
+          side: 'top',
+          align: 'center',
+        },
+      },
+      {
+        element: '#tour-footer',
+        popover: {
+          title: 'More Links',
+          description:
+            'Find out more about this project on the About page, read our Privacy Statement, suggest a new action, or report an issue on GitHub.',
           side: 'top',
           align: 'center',
         },

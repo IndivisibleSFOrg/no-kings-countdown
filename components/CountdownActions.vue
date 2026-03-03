@@ -34,7 +34,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="mt-16 bg-isf-blue text-white py-5">
+    <footer id="tour-footer" class="mt-16 bg-isf-blue text-white py-5">
       <div class="max-w-7xl mx-auto px-4">
         <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
           <NuxtLink to="/about" class="text-white/80 hover:text-white underline-offset-2 hover:underline transition-colors">
