@@ -17,8 +17,7 @@
                 rel="noopener noreferrer" class="underline hover:text-isf-blue transition-colors">No Kings March</a> on
               March 28, 2026.
               Each day unlocks one civic action you can complete in under 15 minutes. Track your progress, share with
-              friends, and build the movement to resist authoritarianism and defend democracy.
-              <button class="underline hover:text-isf-blue transition-colors font-bold" @click="navigateTo('/about')">More&hellip;</button>
+              friends, and build the movement to resist authoritarianism and defend democracy. Privacy is paramount — all progress is stored locally in your browser, and no personal data is collected or shared. <button class="underline hover:text-isf-blue transition-colors font-bold" @click="navigateTo('/privacy')">Learn more.</button>
             </p>
           </div>
 
