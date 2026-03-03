@@ -159,6 +159,7 @@
             <div v-if="!isFuture" class="flex items-center gap-1.5">
               <!-- Share button -->
               <button
+                :id="'tour-card-share-' + formatDateKey(action.date)"
                 class="text-isf-slate hover:text-isf-red transition-colors p-0.5"
                 aria-label="Share"
                 @click.stop="shareAction"
@@ -216,7 +217,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, inject, onUnmounted } from 'vue';
+import { ref, computed, inject, onUnmounted, nextTick } from 'vue';
 import defaultImage from '~/assets/christy-dalmat-y_z3rURYpR0-unsplash.webp';
 import { renderInlineMarkdown, renderMarkdown } from '~/composables/useMarkdown';
 import type { ActionItem } from '~/composables/googleSheets';
@@ -239,8 +240,9 @@ const openDetail = inject<(action: ActionItem) => void>('openDetail', () => {});
 const _initToday = new Date();
 _initToday.setHours(0, 0, 0, 0);
 const isFlipped = ref(props.action.date <= _initToday);
-const { isComplete, toggleComplete } = useActionCompletion();
+const { isComplete, toggleComplete, completedKeys } = useActionCompletion();
 const { trackShareDetail, trackCompleteAction } = useAnalytics();
+const { startShareTour } = useShareTour();
 
 const dateLabel = computed(() => {
   const d = props.action.date;
@@ -280,7 +282,13 @@ onUnmounted(() => {
 const handleToggleComplete = (date: Date) => {
   const wasComplete = isComplete(date);
   toggleComplete(date);
-  if (!wasComplete) trackCompleteAction(formatDateKey(date));
+  if (!wasComplete) {
+    trackCompleteAction(formatDateKey(date));
+    // On the very first completion ever, launch the share tour
+    if (completedKeys.value.size === 1 && !settings.value.tourSeenShare) {
+      nextTick(() => setTimeout(() => startShareTour(`#tour-card-share-${formatDateKey(date)}`), 300));
+    }
+  }
 };
 
 // --- Share ---

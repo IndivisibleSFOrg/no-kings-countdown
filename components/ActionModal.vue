@@ -159,14 +159,17 @@ const handleToggleComplete = (date: Date) => {
     trackCompleteAction(formatDateKey(date));
     // On the very first completion ever, launch the share tour
     if (completedKeys.value.size === 1 && !settings.value.tourSeenShare) {
-      nextTick(() => setTimeout(startShareTour, 300));
+      nextTick(() => setTimeout(() => startShareTour('#tour-action-share'), 300));
     }
   }
 };
 
 const dateLabel = computed(() => {
   const d = props.action.date;
-  return `${d.getMonth() + 1}/${d.getDate()}`;
+  const month = d.toLocaleDateString('en-US', { month: 'short' });
+  const day = d.getDate();
+  const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+  return `${month} ${day} (${dayName})`;
 });
 
 const shareNotice = ref<string | null>(null);

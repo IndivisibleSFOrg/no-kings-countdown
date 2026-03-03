@@ -14,6 +14,18 @@ const baseConfig: Partial<Config> = {
   doneBtnText: 'Done',
 };
 
+// Module-level flag so concurrent tours don't fight each other.
+// Set true when any driver starts, false in its onDestroyed.
+let anyTourActive = false;
+
+/** Run `fn` once no other tour is active, polling every 200 ms. */
+const whenTourIdle = (fn: () => void) => {
+  if (!anyTourActive) { fn(); return; }
+  const id = setInterval(() => {
+    if (!anyTourActive) { clearInterval(id); fn(); }
+  }, 200);
+};
+
 /** Tour for the main landing page. Call inside onMounted. */
 export function useHomeTour() {
   const { settings, set } = useSettings();
@@ -84,10 +96,12 @@ export function useHomeTour() {
       ...baseConfig,
       steps: validSteps,
       onDestroyed: () => {
+        anyTourActive = false;
         set('tourSeenHome', true);
       },
     });
 
+    anyTourActive = true;
     driverObj.drive();
   };
 
@@ -105,22 +119,22 @@ export function useModalTour() {
 
     const allSteps: DriveStep[] = [
       {
-        element: '#tour-action-complete',
-        popover: {
-          title: 'Mark It Complete',
-          description:
-            'After taking the action, tap this button to log your completion and add it to your score.',
-          side: 'left',
-          align: 'center',
-        },
-      },
-      {
         element: '#tour-action-cta',
         popover: {
           title: 'Take Action',
           description:
             'This button links directly to the action — a petition, contact form, event, or resource.',
           side: 'top',
+          align: 'center',
+        },
+      },
+      {
+        element: '#tour-action-complete',
+        popover: {
+          title: 'Mark It Complete',
+          description:
+            'After taking the action, tap this button to log your completion and add it to your score.',
+          side: 'left',
           align: 'center',
         },
       },
@@ -136,10 +150,12 @@ export function useModalTour() {
       ...baseConfig,
       steps: validSteps,
       onDestroyed: () => {
+        anyTourActive = false;
         set('tourSeenModal', true);
       },
     });
 
+    anyTourActive = true;
     driverObj.drive();
   };
 
@@ -150,20 +166,25 @@ export function useModalTour() {
 export function useShareTour() {
   const { settings, set } = useSettings();
 
-  const startShareTour = () => {
+  const startShareTour = (detailShareSelector?: string) => {
+    if (settings.value.tourSeenShare) return;
+    whenTourIdle(() => _driveShare(detailShareSelector));
+  };
+
+  const _driveShare = (detailShareSelector?: string) => {
     if (settings.value.tourSeenShare) return;
 
     const allSteps: DriveStep[] = [
-      {
-        element: '#tour-action-share',
+      ...(detailShareSelector ? [{
+        element: detailShareSelector,
         popover: {
           title: 'Share This Action',
           description:
             'Nice work! Let your network know what you just did — sharing this specific action can inspire others to take it too.',
-          side: 'left',
-          align: 'center',
+          side: 'left' as const,
+          align: 'center' as const,
         },
-      },
+      }] : []),
       {
         element: '#tour-share-progress',
         popover: {
@@ -186,10 +207,12 @@ export function useShareTour() {
       ...baseConfig,
       steps: validSteps,
       onDestroyed: () => {
+        anyTourActive = false;
         set('tourSeenShare', true);
       },
     });
 
+    anyTourActive = true;
     driverObj.drive();
   };
 
