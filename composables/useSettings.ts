@@ -5,6 +5,7 @@ const STORAGE_KEY = 'isf-settings';
 export interface AppSettings {
   tourSeenHome: boolean;
   tourSeenModal: boolean;
+  tourSeenShare: boolean;
   // Shows artist name + link overlaid on each image.
   showImageAttributions: boolean;
   // Internal only — not user-visible. null means "no explicit override; auto-detect".
@@ -14,6 +15,7 @@ export interface AppSettings {
 const DEFAULTS: AppSettings = {
   tourSeenHome: false,
   tourSeenModal: false,
+  tourSeenShare: false,
   showImageAttributions: false,
   devModeOverride: null,
 };

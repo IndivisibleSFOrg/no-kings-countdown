@@ -14,7 +14,7 @@
         </div>
         
         <!-- Calendar cells -->
-        <div v-for="(dateInfo, index) in allDates" :key="`${dateInfo.month}-${dateInfo.date}-${index}`" class="calendar-cell">
+        <div v-for="(dateInfo, index) in allDates" :key="`${dateInfo.month}-${dateInfo.date}-${index}`" class="calendar-cell" :id="actionIdForCell(dateInfo.date, dateInfo.month)">
           <template v-if="dateInfo.date !== null && dateInfo.month !== null">
             <ActionCard
               v-if="getActionForDate(dateInfo.date, dateInfo.month)"
@@ -36,6 +36,7 @@
 import { ref, onMounted, computed } from 'vue';
 import type { ActionItem } from '~/composables/googleSheets';
 import ActionCard from './ActionCard.vue';
+import { formatDateKey } from '~/composables/dateHelpers';
 
 interface Props {
   actions: ActionItem[];
@@ -92,6 +93,12 @@ const getActionForDate = (day: number, month: number) => {
     const actionDate = action.date;
     return actionDate.getDate() === day && (actionDate.getMonth() + 1) === month;
   });
+};
+
+const actionIdForCell = (day: number | null, month: number | null): string | undefined => {
+  if (!day || !month) return undefined;
+  const action = getActionForDate(day, month);
+  return action ? `action-${formatDateKey(action.date)}` : undefined;
 };
 
 onMounted(() => {

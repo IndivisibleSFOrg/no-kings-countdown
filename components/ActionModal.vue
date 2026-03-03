@@ -146,16 +146,22 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits<{ close: [] }>();
 
-const { isComplete, toggleComplete } = useActionCompletion();
+const { isComplete, toggleComplete, completedKeys } = useActionCompletion();
 const { trackShareDetail, trackCompleteAction } = useAnalytics();
 const { startModalTour } = useModalTour();
+const { startShareTour } = useShareTour();
 const { settings } = useSettings();
 
 const handleToggleComplete = (date: Date) => {
   const wasComplete = isComplete(date);
   toggleComplete(date);
-  // Only track the completion event, not un-completion
-  if (!wasComplete) trackCompleteAction(formatDateKey(date));
+  if (!wasComplete) {
+    trackCompleteAction(formatDateKey(date));
+    // On the very first completion ever, launch the share tour
+    if (completedKeys.value.size === 1 && !settings.value.tourSeenShare) {
+      nextTick(() => setTimeout(startShareTour, 300));
+    }
+  }
 };
 
 const dateLabel = computed(() => {

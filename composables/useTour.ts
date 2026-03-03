@@ -27,7 +27,7 @@ export function useHomeTour() {
         popover: {
           title: 'Welcome to No Kings Countdown',
           description:
-            'A daily action calendar counting down to the No Kings March on March 28, 2026. Each day unlocks one civic action you can complete in under 15 minutes.',
+            'Each day unlocks a civic action you can take in under 15 minutes. Complete them, track your score, and help build the movement.',
           side: 'bottom',
           align: 'start',
         },
@@ -45,9 +45,9 @@ export function useHomeTour() {
       {
         element: '#tour-main',
         popover: {
-          title: 'Daily Action Cards',
+          title: 'Daily Actions',
           description:
-            'Click any unlocked card to see its full details, follow the link to take action, and mark it complete.',
+            'Browse the calendar — click any unlocked day to see the full action, follow the link, and mark it complete. On mobile you\'ll see a card grid instead.',
           side: 'top',
           align: 'center',
         },
@@ -57,9 +57,19 @@ export function useHomeTour() {
         popover: {
           title: 'Spread the Word',
           description:
-            'Share your progress with friends to inspire others and help build the movement toward March 28!',
+            'Share your progress with friends to inspire others to join the movement.',
           side: 'bottom',
           align: 'end',
+        },
+      },
+      {
+        element: '#action-2026-03-01',
+        popover: {
+          title: 'Start Here: Sign Up for No Kings 3',
+          description:
+            'March 1 is the single most important action in the whole countdown — signing up for the No Kings March on March 28. If you do only one thing, make it this.',
+          side: 'top',
+          align: 'center',
         },
       },
     ];
@@ -84,7 +94,7 @@ export function useHomeTour() {
   return { startHomeTour };
 }
 
-/** Tour for the action-detail modal. Call inside onMounted of ActionDetails. */
+/** Tour for the action-detail modal. Call inside onMounted of ActionModal. */
 export function useModalTour() {
   const { settings, set } = useSettings();
 
@@ -114,16 +124,6 @@ export function useModalTour() {
           align: 'center',
         },
       },
-      {
-        element: '#tour-action-share',
-        popover: {
-          title: 'Share This Action',
-          description:
-            'Share this specific action with your network to multiply the movement\'s impact.',
-          side: 'left',
-          align: 'center',
-        },
-      },
     ];
 
     // Only include steps whose target element exists in the DOM
@@ -144,4 +144,54 @@ export function useModalTour() {
   };
 
   return { startModalTour };
+}
+
+/** Tour shown immediately after the user completes their first action. */
+export function useShareTour() {
+  const { settings, set } = useSettings();
+
+  const startShareTour = () => {
+    if (settings.value.tourSeenShare) return;
+
+    const allSteps: DriveStep[] = [
+      {
+        element: '#tour-action-share',
+        popover: {
+          title: 'Share This Action',
+          description:
+            'Nice work! Let your network know what you just did — sharing this specific action can inspire others to take it too.',
+          side: 'left',
+          align: 'center',
+        },
+      },
+      {
+        element: '#tour-share-progress',
+        popover: {
+          title: 'Share Your Score',
+          description:
+            'You can also share your overall progress to motivate friends to join the movement.',
+          side: 'bottom',
+          align: 'end',
+        },
+      },
+    ];
+
+    // Only include steps whose target element exists in the DOM
+    const validSteps = allSteps.filter(
+      s => !s.element || !!document.querySelector(s.element as string),
+    );
+    if (!validSteps.length) return;
+
+    const driverObj = driver({
+      ...baseConfig,
+      steps: validSteps,
+      onDestroyed: () => {
+        set('tourSeenShare', true);
+      },
+    });
+
+    driverObj.drive();
+  };
+
+  return { startShareTour };
 }
