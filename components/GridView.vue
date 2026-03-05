@@ -3,8 +3,8 @@
     <div class="grid-view">
       <div
         v-for="action in sortedActions"
+        :id="`action-${formatDateKey(action.date)}`"
         :key="action.date.toISOString()"
-        :id="'action-' + formatDateKey(action.date)"
         :class="{ 'today-card': isTodayDate(action.date) }"
         style="border-radius: 0.75rem;"
       >
@@ -20,32 +20,30 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import ActionCard from './ActionCard.vue';
-import type { ActionItem } from '~/composables/googleSheets';
-import { formatDateKey } from '~/composables/dateHelpers';
+import type { ActionItem } from '~/composables/googleSheets'
+import { computed } from 'vue'
+import { formatDateKey } from '~/composables/dateHelpers'
+import ActionCard from './ActionCard.vue'
 
 interface Props {
-  actions: ActionItem[];
-  highlightDate?: string | null;
+  actions: ActionItem[]
+  highlightDate?: string | null
 }
 
-const props = defineProps<Props>();
+const props = defineProps<Props>()
 
 const sortedActions = computed(() =>
-  [...props.actions].sort((a, b) => a.date.getTime() - b.date.getTime())
-);
+  [...props.actions].sort((a, b) => a.date.getTime() - b.date.getTime()),
+)
 
-const isTodayDate = (date: Date): boolean => {
-  const now = new Date();
+function isTodayDate(date: Date): boolean {
+  const now = new Date()
   return (
-    date.getFullYear() === now.getFullYear() &&
-    date.getMonth() === now.getMonth() &&
-    date.getDate() === now.getDate()
-  );
-};
-
-
+    date.getFullYear() === now.getFullYear()
+    && date.getMonth() === now.getMonth()
+    && date.getDate() === now.getDate()
+  )
+}
 </script>
 
 <style scoped>

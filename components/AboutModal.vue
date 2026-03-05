@@ -14,7 +14,9 @@
       >
         <!-- Header -->
         <div class="flex items-center justify-between px-5 py-4 border-b border-isf-tinted flex-shrink-0">
-          <h2 class="font-bold text-isf-navy text-lg">About No Kings Countdown</h2>
+          <h2 class="font-bold text-isf-navy text-lg">
+            About No Kings Countdown
+          </h2>
           <button
             class="text-isf-slate hover:text-isf-navy bg-transparent rounded-full p-1.5 transition-colors"
             aria-label="Close"
@@ -33,11 +35,15 @@
             The <a href="https://nokings.org/" target="_blank" rel="noopener noreferrer" class="underline hover:text-isf-blue">No Kings March</a> is a nationwide mobilization to defend democratic norms and oppose authoritarian overreach. This app helps people show up for the cause every day in the weeks leading up to the march — not just on the day itself.
           </p>
           <p class="text-isf-navy text-base leading-relaxed">
-            Each day unlocks one action completable in under 15 minutes: calling a representative, sharing a message, supporting an organization, or showing up locally. <strong>Progress is tracked privately in your browser — nothing is sent to any server.</strong> (<button class="underline hover:text-isf-blue transition-colors" @click="emit('privacy')">See our Privacy Statement</button>)
+            Each day unlocks one action completable in under 15 minutes: calling a representative, sharing a message, supporting an organization, or showing up locally. <strong>Progress is tracked privately in your browser — nothing is sent to any server.</strong> (<button class="underline hover:text-isf-blue transition-colors" @click="emit('privacy')">
+              See our Privacy Statement
+            </button>)
           </p>
 
           <div>
-            <h3 class="font-semibold text-isf-navy text-base mb-2">Actions will be:</h3>
+            <h3 class="font-semibold text-isf-navy text-base mb-2">
+              Actions will be:
+            </h3>
             <ul class="space-y-1.5">
               <li class="flex gap-2 text-base text-isf-navy leading-relaxed">
                 <span class="mt-0.5 text-isf-blue flex-shrink-0">✓</span>
@@ -67,16 +73,17 @@
           </p>
 
           <p class="text-isf-navy text-base leading-relaxed">
-            Images courtesy of our <button class="underline hover:text-isf-blue transition-colors" @click="navigateTo('/artists')">contributing artists →</button>
+            Images courtesy of our <button class="underline hover:text-isf-blue transition-colors" @click="navigateTo('/artists')">
+              contributing artists →
+            </button>
           </p>
 
           <!-- ISF Logo -->
           <div class="flex justify-center pt-2">
             <a href="https://indivisiblesf.org/" target="_blank" rel="noopener noreferrer">
-              <img src="/isf-logo.webp" alt="Indivisible SF" class="h-12 w-auto opacity-80 hover:opacity-100 transition-opacity" />
+              <img src="/isf-logo.webp" alt="Indivisible SF" class="h-12 w-auto opacity-80 hover:opacity-100 transition-opacity">
             </a>
           </div>
-
         </div>
 
         <!-- Footer -->
@@ -119,35 +126,36 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed } from 'vue'
 
 interface Props {
-  fetchedAt?: Date | null;
+  fetchedAt?: Date | null
 }
 
-const props = defineProps<Props>();
-const emit = defineEmits<{ close: []; refresh: []; privacy: [] }>();
+const props = defineProps<Props>()
+const emit = defineEmits<{ close: [], refresh: [], privacy: [] }>()
 
-const config = useRuntimeConfig();
+const config = useRuntimeConfig()
 
 const buildInfo = computed(() => {
-  const sha = config.public.commitSha as string;
-  const ref = config.public.commitRef as string;
-  const date = config.public.buildDate as string;
-  const iso = new Date(date).toISOString();
-  const [datePart, timePart] = iso.split('T');
+  const sha = config.public.commitSha as string
+  const ref = config.public.commitRef as string
+  const date = config.public.buildDate as string
+  const iso = new Date(date).toISOString()
+  const [datePart, timePart] = iso.split('T')
   return {
     shortSha: sha.slice(0, 7),
     fullSha: sha,
-    ref: ref,
+    ref,
     date: `${datePart} ${timePart.slice(0, 5)} UTC`,
-  };
-});
+  }
+})
 
 const dataFreshnessLabel = computed(() => {
-  if (!props.fetchedAt) return '';
-  const iso = props.fetchedAt.toISOString();
-  const [datePart, timePart] = iso.split('T');
-  return `${datePart} ${timePart.slice(0, 5)} UTC`;
-});
+  if (!props.fetchedAt)
+    return ''
+  const iso = props.fetchedAt.toISOString()
+  const [datePart, timePart] = iso.split('T')
+  return `${datePart} ${timePart.slice(0, 5)} UTC`
+})
 </script>

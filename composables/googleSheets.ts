@@ -1,5 +1,5 @@
-import Papa from 'papaparse';
-import { parseCsvDate } from '~/composables/dateHelpers';
+import Papa from 'papaparse'
+import { parseCsvDate } from '~/composables/dateHelpers'
 
 // ActionItem represents the structured data used in the application, while
 // ActionCSVItem represents the raw data format from the CSV. The
@@ -10,42 +10,43 @@ import { parseCsvDate } from '~/composables/dateHelpers';
 // array of ActionItem objects.
 
 export interface AttributedImage {
-  image_url: string;
-  artist_name: string;
-  artist_url: string;
+  image_url: string
+  artist_name: string
+  artist_url: string
 }
 
 export interface ActionItem {
-  date: Date;
-  details: string;
-  headline: string;
-  image_back: AttributedImage;
-  image_front: AttributedImage;
-  labels: string[];
-  link_text: string;
-  link_url: string;
-  social_message: string;
+  date: Date
+  details: string
+  headline: string
+  image_back: AttributedImage
+  image_front: AttributedImage
+  labels: string[]
+  link_text: string
+  link_url: string
+  social_message: string
 }
 
 export interface ActionCSVItem {
-  date: string;
-  details: string;
-  headline: string;
-  image_back_artist: string;
-  image_back_artist_url: string;
-  image_back_url: string;
-  image_front_artist: string;
-  image_front_artist_url: string;
-  image_front_url: string;
-  labels: string;
-  link_text: string;
-  link_url: string;
-  social_message: string;
+  date: string
+  details: string
+  headline: string
+  image_back_artist: string
+  image_back_artist_url: string
+  image_back_url: string
+  image_front_artist: string
+  image_front_artist_url: string
+  image_front_url: string
+  labels: string
+  link_text: string
+  link_url: string
+  social_message: string
 }
 
-export const toCountdownItem = (item: ActionCSVItem): ActionItem | null => {
-  const date = parseCsvDate(item.date);
-  if (date === null) return null;
+export function toCountdownItem(item: ActionCSVItem): ActionItem | null {
+  const date = parseCsvDate(item.date)
+  if (date === null)
+    return null
   return {
     date,
     details: item.details || '',
@@ -64,41 +65,42 @@ export const toCountdownItem = (item: ActionCSVItem): ActionItem | null => {
     link_text: item.link_text || 'Learn more',
     link_url: item.link_url || '#',
     social_message: item.social_message || '',
-  };
-};
+  }
+}
 
 export async function fetchCountdownItems(): Promise<ActionItem[]> {
-  const { public: { sheetUrl } } = useRuntimeConfig();
+  const { public: { sheetUrl } } = useRuntimeConfig()
   try {
-    const response = await fetch(sheetUrl, { 
+    const response = await fetch(sheetUrl, {
       cache: 'no-cache',
-      redirect: 'follow'
-    });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const csvText = await response.text();
+      redirect: 'follow',
+    })
 
-    return new Promise((resolve, reject) => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const csvText = await response.text()
+
+    return await new Promise((resolve, reject) => {
       Papa.parse<ActionCSVItem>(csvText, {
         header: true,
         skipEmptyLines: true,
         complete: (results) => {
           resolve(
             results.data
-              .map((item) => toCountdownItem(item))
-              .filter((item): item is ActionItem => item !== null)
-          );
+              .map(item => toCountdownItem(item))
+              .filter((item): item is ActionItem => item !== null),
+          )
         },
         error: (error: Error) => {
-          reject(error);
+          reject(error)
         },
-      });
-    });
-  } catch (error) {
-    console.error('Error fetching Google Sheet data:', error);
-    return [];
+      })
+    })
+  }
+  catch (error) {
+    console.error('Error fetching Google Sheet data:', error)
+    return []
   }
 }

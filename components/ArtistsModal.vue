@@ -14,7 +14,9 @@
       >
         <!-- Header -->
         <div class="flex items-center justify-between px-5 py-4 border-b border-isf-tinted flex-shrink-0">
-          <h2 class="font-bold text-isf-navy text-lg">Image Artists</h2>
+          <h2 class="font-bold text-isf-navy text-lg">
+            Image Artists
+          </h2>
           <button
             class="text-isf-slate hover:text-isf-navy bg-transparent rounded-full p-1.5 transition-colors"
             aria-label="Close"
@@ -43,7 +45,9 @@
               class="text-isf-blue hover:text-isf-navy text-sm underline underline-offset-2 transition-colors truncate"
             >{{ artist.name }}</a>
           </div>
-          <p v-else class="text-sm text-isf-slate italic">No artist data available yet.</p>
+          <p v-else class="text-sm text-isf-slate italic">
+            No artist data available yet.
+          </p>
         </div>
 
         <!-- Footer -->
@@ -61,36 +65,38 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted } from 'vue';
+import { computed, onMounted, onUnmounted } from 'vue'
 
-const emit = defineEmits<{ close: [] }>();
+const emit = defineEmits<{ close: [] }>()
 
-const { communityActions } = useGoogleSheetsData();
+const { communityActions } = useGoogleSheetsData()
 
 interface Artist {
-  name: string;
-  url: string;
+  name: string
+  url: string
 }
 
 const artists = computed<Artist[]>(() => {
-  if (!communityActions.value) return [];
-  const seen = new Set<string>();
-  const result: Artist[] = [];
+  if (!communityActions.value)
+    return []
+  const seen = new Set<string>()
+  const result: Artist[] = []
   for (const action of communityActions.value) {
     for (const img of [action.image_front, action.image_back]) {
       if (img.artist_name && img.artist_url && !seen.has(img.artist_name)) {
-        seen.add(img.artist_name);
-        result.push({ name: img.artist_name, url: img.artist_url });
+        seen.add(img.artist_name)
+        result.push({ name: img.artist_name, url: img.artist_url })
       }
     }
   }
-  return result.sort((a, b) => a.name.localeCompare(b.name));
-});
+  return result.sort((a, b) => a.name.localeCompare(b.name))
+})
 
-const onKeydown = (e: KeyboardEvent) => {
-  if (e.key === 'Escape') emit('close');
-};
+function onKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape')
+    emit('close')
+}
 
-onMounted(() => document.addEventListener('keydown', onKeydown));
-onUnmounted(() => document.removeEventListener('keydown', onKeydown));
+onMounted(() => document.addEventListener('keydown', onKeydown))
+onUnmounted(() => document.removeEventListener('keydown', onKeydown))
 </script>

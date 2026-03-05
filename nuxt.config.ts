@@ -1,21 +1,23 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import { execSync } from 'child_process';
+import { execSync } from 'node:child_process'
 
 const gitDescribe = (() => {
   try {
-    return execSync('git describe --always --dirty=+').toString().trim();
-  } catch {
-    return 'dev';
+    return execSync('git describe --always --dirty=+').toString().trim()
   }
-})();
+  catch {
+    return 'dev'
+  }
+})()
 
 const gitBranch = (() => {
   try {
-    return execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
-  } catch {
-    return 'local';
+    return execSync('git rev-parse --abbrev-ref HEAD').toString().trim()
   }
-})();
+  catch {
+    return 'local'
+  }
+})()
 
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
@@ -23,7 +25,7 @@ export default defineNuxtConfig({
 
   modules: [
     '@nuxtjs/tailwindcss',
-    'nuxt-gtag'
+    'nuxt-gtag',
   ],
 
   gtag: {
@@ -52,7 +54,7 @@ export default defineNuxtConfig({
         { name: 'twitter:url', content: 'https://nokingscountdown.org/' },
         { name: 'twitter:title', content: 'No Kings Countdown: Daily actions to build community engagement' },
         { name: 'twitter:description', content: 'A daily action calendar counting down to the No Kings March on March 28, 2026' },
-        { name: 'twitter:image', content: 'https://nokingscountdown.org/og-image.webp' }
+        { name: 'twitter:image', content: 'https://nokingscountdown.org/og-image.webp' },
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -60,15 +62,15 @@ export default defineNuxtConfig({
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         {
           rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700;900&family=Source+Code+Pro:wght@400;600&display=swap'
-        }
-      ]
-    }
+          href: 'https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700;900&family=Source+Code+Pro:wght@400;600&display=swap',
+        },
+      ],
+    },
   },
 
   css: [
     '@/assets/css/main.css',
-    'driver.js/dist/driver.css'
+    'driver.js/dist/driver.css',
   ],
 
   ssr: false,
@@ -76,13 +78,13 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'static',
     output: {
-      publicDir: 'out'
-    }
+      publicDir: 'out',
+    },
   },
 
   typescript: {
     strict: true,
-    typeCheck: true
+    typeCheck: true,
   },
 
   runtimeConfig: {
@@ -90,7 +92,7 @@ export default defineNuxtConfig({
       commitSha: process.env.NUXT_PUBLIC_COMMIT_SHA || gitDescribe,
       commitRef: process.env.NUXT_PUBLIC_COMMIT_REF || gitBranch,
       buildDate: process.env.NUXT_PUBLIC_BUILD_DATE || new Date().toISOString(),
-      sheetUrl: process.env.NUXT_PUBLIC_SHEET_URL || 'https://docs.google.com/spreadsheets/d/1LBJiAlm4tKg9nYosVB98t4lW59QJYBYCkZArwWyygTQ/export?format=csv&gid=1665550594'
-    }
-  }
-});
+      sheetUrl: process.env.NUXT_PUBLIC_SHEET_URL || 'https://docs.google.com/spreadsheets/d/1LBJiAlm4tKg9nYosVB98t4lW59QJYBYCkZArwWyygTQ/export?format=csv&gid=1665550594',
+    },
+  },
+})

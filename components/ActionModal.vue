@@ -21,7 +21,7 @@
             :alt="action.headline"
             class="absolute inset-0 w-full h-full object-cover"
             referrerpolicy="no-referrer"
-          />
+          >
           <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent" />
 
           <!-- Date label -->
@@ -132,86 +132,91 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted, nextTick } from 'vue';
-import defaultImage from '~/assets/christy-dalmat-y_z3rURYpR0-unsplash.webp';
-import { renderMarkdown, renderInlineMarkdown } from '~/composables/useMarkdown';
-import type { ActionItem } from '~/composables/googleSheets';
-import { useActionCompletion } from '~/composables/useActionCompletion';
-import { formatDateKey } from '~/composables/dateHelpers';
+import type { ActionItem } from '~/composables/googleSheets'
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
+import defaultImage from '~/assets/christy-dalmat-y_z3rURYpR0-unsplash.webp'
+import { formatDateKey } from '~/composables/dateHelpers'
+import { useActionCompletion } from '~/composables/useActionCompletion'
+import { renderInlineMarkdown, renderMarkdown } from '~/composables/useMarkdown'
 
 interface Props {
-  action: ActionItem;
+  action: ActionItem
 }
 
-const props = defineProps<Props>();
-const emit = defineEmits<{ close: [] }>();
+const props = defineProps<Props>()
+const emit = defineEmits<{ close: [] }>()
 
-const { isComplete, toggleComplete, completedKeys } = useActionCompletion();
-const { trackShareDetail, trackCompleteAction } = useAnalytics();
-const { startModalTour } = useModalTour();
-const { startShareTour } = useShareTour();
-const { settings } = useSettings();
+const { isComplete, toggleComplete, completedKeys } = useActionCompletion()
+const { trackShareDetail, trackCompleteAction } = useAnalytics()
+const { startModalTour } = useModalTour()
+const { startShareTour } = useShareTour()
+const { settings } = useSettings()
 
-const handleToggleComplete = (date: Date) => {
-  const wasComplete = isComplete(date);
-  toggleComplete(date);
+function handleToggleComplete(date: Date) {
+  const wasComplete = isComplete(date)
+  toggleComplete(date)
   if (!wasComplete) {
-    trackCompleteAction(formatDateKey(date));
+    trackCompleteAction(formatDateKey(date))
     // On the very first completion ever, launch the share tour
     if (completedKeys.value.size === 1 && !settings.value.tourSeenShare) {
-      nextTick(() => setTimeout(() => startShareTour('#tour-action-share'), 300));
+      nextTick(() => setTimeout(() => startShareTour('#tour-action-share'), 300))
     }
   }
-};
+}
 
 const dateLabel = computed(() => {
-  const d = props.action.date;
-  const month = d.toLocaleDateString('en-US', { month: 'short' });
-  const day = d.getDate();
-  const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
-  return `${month} ${day} (${dayName})`;
-});
+  const d = props.action.date
+  const month = d.toLocaleDateString('en-US', { month: 'short' })
+  const day = d.getDate()
+  const dayName = d.toLocaleDateString('en-US', { weekday: 'short' })
+  return `${month} ${day} (${dayName})`
+})
 
-const shareNotice = ref<string | null>(null);
-let shareNoticeTimer: ReturnType<typeof setTimeout> | null = null;
+const shareNotice = ref<string | null>(null)
+let shareNoticeTimer: ReturnType<typeof setTimeout> | null = null
 
-const shareAction = async () => {
-  trackShareDetail(formatDateKey(props.action.date));
-  const shareTitle = `No Kings 3 Countdown: ${props.action.headline}`;
-  const shareText = props.action.social_message || props.action.details || '';
-  const shareUrl = window.location.href;
+async function shareAction() {
+  trackShareDetail(formatDateKey(props.action.date))
+  const shareTitle = `No Kings 3 Countdown: ${props.action.headline}`
+  const shareText = props.action.social_message || props.action.details || ''
+  const shareUrl = window.location.href
 
   if (typeof navigator !== 'undefined' && navigator.share) {
     try {
-      await navigator.share({ title: shareTitle, text: shareText, url: shareUrl });
-    } catch {
+      await navigator.share({ title: shareTitle, text: shareText, url: shareUrl })
+    }
+    catch {
       // User cancelled — ignore
     }
-  } else {
-    const fullText = [shareTitle, shareText, shareUrl].filter(Boolean).join('\n');
+  }
+  else {
+    const fullText = [shareTitle, shareText, shareUrl].filter(Boolean).join('\n')
     try {
-      await navigator.clipboard.writeText(fullText);
-    } catch {
+      await navigator.clipboard.writeText(fullText)
+    }
+    catch {
       // Clipboard blocked — still show notice
     }
-    if (shareNoticeTimer) clearTimeout(shareNoticeTimer);
-    shareNotice.value = 'Copied to clipboard! Paste on social media or in a text to share.';
+    if (shareNoticeTimer)
+      clearTimeout(shareNoticeTimer)
+    shareNotice.value = 'Copied to clipboard! Paste on social media or in a text to share.'
     shareNoticeTimer = setTimeout(() => {
-      shareNotice.value = null;
-    }, 6000);
+      shareNotice.value = null
+    }, 6000)
   }
-};
+}
 
-const onKeydown = (e: KeyboardEvent) => {
-  if (e.key === 'Escape') emit('close');
-};
+function onKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape')
+    emit('close')
+}
 
 onMounted(() => {
-  document.addEventListener('keydown', onKeydown);
+  document.addEventListener('keydown', onKeydown)
   // Start modal tour for first-time modal viewers (deferred to let DOM settle)
-  nextTick(() => setTimeout(startModalTour, 500));
-});
-onUnmounted(() => document.removeEventListener('keydown', onKeydown));
+  nextTick(() => setTimeout(startModalTour, 500))
+})
+onUnmounted(() => document.removeEventListener('keydown', onKeydown))
 </script>
 
 <style scoped>

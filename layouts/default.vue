@@ -5,7 +5,7 @@
       :actions="visibleActions"
     />
     <div v-else class="min-h-screen flex items-center justify-center">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-isf-red"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-isf-red" />
     </div>
     <!-- Modal pages render here via <slot> and teleport themselves to <body> -->
     <slot />
@@ -13,10 +13,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted } from 'vue'
 
-const { communityActions, loadData } = useGoogleSheetsData();
-const visibleActions = useVisibleActions(communityActions);
+const { communityActions, loadData } = useGoogleSheetsData()
+const visibleActions = useVisibleActions(communityActions)
 
-onMounted(loadData);
+onMounted(loadData)
 </script>

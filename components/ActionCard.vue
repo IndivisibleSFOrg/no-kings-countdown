@@ -14,7 +14,7 @@
           :alt="action.headline"
           class="absolute inset-0 w-full h-full object-cover"
           referrerpolicy="no-referrer"
-        />
+        >
         <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent" />
 
         <!-- Date: upper left -->
@@ -104,7 +104,7 @@
             :alt="action.headline"
             class="absolute inset-0 w-full h-full object-cover"
             referrerpolicy="no-referrer"
-          />
+          >
           <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent" />
           <!-- Date: upper left -->
           <div class="absolute top-2 left-2 text-white font-bold leading-none drop-shadow" :class="props.dateLabelSize ?? 'text-2xl'">
@@ -155,60 +155,60 @@
 
           <!-- Bottom row + share notice: absolutely pinned to bottom of lower half -->
           <div class="absolute bottom-0 left-0 right-0 px-3 pb-3 flex flex-col-reverse gap-1">
-          <div class="flex items-center justify-end">
-            <div v-if="!isFuture" class="flex items-center gap-1.5">
-              <!-- Share button -->
-              <button
-                :id="'tour-card-share-' + formatDateKey(action.date)"
-                class="text-isf-slate hover:text-isf-red transition-colors p-0.5"
-                aria-label="Share"
-                @click.stop="shareAction"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="18" cy="5" r="3" />
-                  <circle cx="6" cy="12" r="3" />
-                  <circle cx="18" cy="19" r="3" />
-                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-                </svg>
-              </button>
+            <div class="flex items-center justify-end">
+              <div v-if="!isFuture" class="flex items-center gap-1.5">
+                <!-- Share button -->
+                <button
+                  :id="`tour-card-share-${formatDateKey(action.date)}`"
+                  class="text-isf-slate hover:text-isf-red transition-colors p-0.5"
+                  aria-label="Share"
+                  @click.stop="shareAction"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="18" cy="5" r="3" />
+                    <circle cx="6" cy="12" r="3" />
+                    <circle cx="18" cy="19" r="3" />
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                  </svg>
+                </button>
 
-              <!-- Completion toggle (directly toggles completion, no modal) -->
-              <button
-                class="rounded-full w-7 h-7 flex items-center justify-center shadow transition-colors"
-                :class="isComplete(action.date) ? 'bg-isf-green hover:brightness-110' : isToday ? 'bg-gray-400 hover:brightness-110' : 'bg-isf-red hover:brightness-110'"
-                :title="isComplete(action.date) ? 'Mark incomplete' : 'Mark complete'"
-                @click.stop="handleToggleComplete(action.date)"
-              >
-                <template v-if="isComplete(action.date) || isToday">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </template>
-                <template v-else>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
-                </template>
-              </button>
+                <!-- Completion toggle (directly toggles completion, no modal) -->
+                <button
+                  class="rounded-full w-7 h-7 flex items-center justify-center shadow transition-colors"
+                  :class="isComplete(action.date) ? 'bg-isf-green hover:brightness-110' : isToday ? 'bg-gray-400 hover:brightness-110' : 'bg-isf-red hover:brightness-110'"
+                  :title="isComplete(action.date) ? 'Mark incomplete' : 'Mark complete'"
+                  @click.stop="handleToggleComplete(action.date)"
+                >
+                  <template v-if="isComplete(action.date) || isToday">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </template>
+                  <template v-else>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </template>
+                </button>
+              </div>
             </div>
-          </div>
 
-          <!-- Share notice -->
-          <Transition
-            enter-active-class="transition-all duration-300 ease-out"
-            leave-active-class="transition-all duration-300 ease-in"
-            enter-from-class="opacity-0 translate-y-1"
-            leave-to-class="opacity-0 translate-y-1"
-          >
-            <div
-              v-if="shareNotice"
-              class="text-[10px] text-isf-navy bg-isf-navy/10 rounded px-2 py-1 text-center leading-tight"
+            <!-- Share notice -->
+            <Transition
+              enter-active-class="transition-all duration-300 ease-out"
+              leave-active-class="transition-all duration-300 ease-in"
+              enter-from-class="opacity-0 translate-y-1"
+              leave-to-class="opacity-0 translate-y-1"
             >
-              {{ shareNotice }}
-            </div>
-          </Transition>
+              <div
+                v-if="shareNotice"
+                class="text-[10px] text-isf-navy bg-isf-navy/10 rounded px-2 py-1 text-center leading-tight"
+              >
+                {{ shareNotice }}
+              </div>
+            </Transition>
           </div>
         </div>
       </div>
@@ -217,110 +217,115 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, inject, onUnmounted, nextTick } from 'vue';
-import defaultImage from '~/assets/christy-dalmat-y_z3rURYpR0-unsplash.webp';
-import { renderInlineMarkdown, renderMarkdown } from '~/composables/useMarkdown';
-import type { ActionItem } from '~/composables/googleSheets';
-import { useActionCompletion } from '~/composables/useActionCompletion';
-import { formatDateKey } from '~/composables/dateHelpers';
+import type { ActionItem } from '~/composables/googleSheets'
+import { computed, inject, nextTick, onUnmounted, ref } from 'vue'
+import defaultImage from '~/assets/christy-dalmat-y_z3rURYpR0-unsplash.webp'
+import { formatDateKey } from '~/composables/dateHelpers'
+import { useActionCompletion } from '~/composables/useActionCompletion'
+import { renderInlineMarkdown, renderMarkdown } from '~/composables/useMarkdown'
 
 interface Props {
-  action: ActionItem;
-  showDayName?: boolean;
-  dateLabelSize?: string;
-  allowModal?: boolean;
-  highlight?: boolean;
+  action: ActionItem
+  showDayName?: boolean
+  dateLabelSize?: string
+  allowModal?: boolean
+  highlight?: boolean
 }
 
-const props = defineProps<Props>();
+const props = defineProps<Props>()
 
-const openDetail = inject<(action: ActionItem) => void>('openDetail', () => {});
+const openDetail = inject<(action: ActionItem) => void>('openDetail', () => {})
 
 // Start flipped for past/today cards so users see the content immediately.
-const _initToday = new Date();
-_initToday.setHours(0, 0, 0, 0);
-const isFlipped = ref(props.action.date <= _initToday);
-const { isComplete, toggleComplete, completedKeys } = useActionCompletion();
-const { trackShareDetail, trackCompleteAction } = useAnalytics();
-const { startShareTour } = useShareTour();
+const _initToday = new Date()
+_initToday.setHours(0, 0, 0, 0)
+const isFlipped = ref(props.action.date <= _initToday)
+const { isComplete, toggleComplete, completedKeys } = useActionCompletion()
+const { trackShareDetail, trackCompleteAction } = useAnalytics()
+const { startShareTour } = useShareTour()
 
 const dateLabel = computed(() => {
-  const d = props.action.date;
-  const month = d.toLocaleDateString('en-US', { month: 'short' });
-  const day = d.getDate();
+  const d = props.action.date
+  const month = d.toLocaleDateString('en-US', { month: 'short' })
+  const day = d.getDate()
   if (props.showDayName) {
-    const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
-    return `${month} ${day} (${dayName})`;
+    const dayName = d.toLocaleDateString('en-US', { weekday: 'short' })
+    return `${month} ${day} (${dayName})`
   }
-  return `${month} ${day}`;
-});
+  return `${month} ${day}`
+})
 
 const isToday = computed(() => {
-  const today = new Date();
-  const d = props.action.date;
+  const today = new Date()
+  const d = props.action.date
   return (
-    d.getFullYear() === today.getFullYear() &&
-    d.getMonth() === today.getMonth() &&
-    d.getDate() === today.getDate()
-  );
-});
+    d.getFullYear() === today.getFullYear()
+    && d.getMonth() === today.getMonth()
+    && d.getDate() === today.getDate()
+  )
+})
 
 const isFuture = computed(() => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return props.action.date > today;
-});
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return props.action.date > today
+})
 
-const { isDevMode: isDev } = useDevMode();
-const { settings } = useSettings();
-
-onUnmounted(() => {
-  if (shareNoticeTimer) clearTimeout(shareNoticeTimer);
-});
-
-// --- Completion toggle (direct, no modal) ---
-const handleToggleComplete = (date: Date) => {
-  const wasComplete = isComplete(date);
-  toggleComplete(date);
-  if (!wasComplete) {
-    trackCompleteAction(formatDateKey(date));
-    // On the very first completion ever, launch the share tour
-    if (completedKeys.value.size === 1 && !settings.value.tourSeenShare) {
-      nextTick(() => setTimeout(() => startShareTour(`#tour-card-share-${formatDateKey(date)}`), 300));
-    }
-  }
-};
+const { isDevMode: isDev } = useDevMode()
+const { settings } = useSettings()
 
 // --- Share ---
-const shareNotice = ref<string | null>(null);
-let shareNoticeTimer: ReturnType<typeof setTimeout> | null = null;
+const shareNotice = ref<string | null>(null)
+let shareNoticeTimer: ReturnType<typeof setTimeout> | null = null
 
-const shareAction = async () => {
-  trackShareDetail(formatDateKey(props.action.date));
-  const shareTitle = `No Kings Countdown: ${props.action.headline}`;
-  const shareText = props.action.social_message || props.action.details || '';
-  const shareUrl = `${window.location.origin}${window.location.pathname}?detail=${formatDateKey(props.action.date)}`;
+onUnmounted(() => {
+  if (shareNoticeTimer)
+    clearTimeout(shareNoticeTimer)
+})
+
+// --- Completion toggle (direct, no modal) ---
+function handleToggleComplete(date: Date) {
+  const wasComplete = isComplete(date)
+  toggleComplete(date)
+  if (!wasComplete) {
+    trackCompleteAction(formatDateKey(date))
+    // On the very first completion ever, launch the share tour
+    if (completedKeys.value.size === 1 && !settings.value.tourSeenShare) {
+      nextTick(() => setTimeout(() => startShareTour(`#tour-card-share-${formatDateKey(date)}`), 300))
+    }
+  }
+}
+
+async function shareAction() {
+  trackShareDetail(formatDateKey(props.action.date))
+  const shareTitle = `No Kings Countdown: ${props.action.headline}`
+  const shareText = props.action.social_message || props.action.details || ''
+  const shareUrl = `${window.location.origin}${window.location.pathname}?detail=${formatDateKey(props.action.date)}`
 
   if (typeof navigator !== 'undefined' && navigator.share) {
     try {
-      await navigator.share({ title: shareTitle, text: shareText, url: shareUrl });
-    } catch {
+      await navigator.share({ title: shareTitle, text: shareText, url: shareUrl })
+    }
+    catch {
       // User cancelled — ignore
     }
-  } else {
-    const fullText = [shareTitle, shareText, shareUrl].filter(Boolean).join('\n');
+  }
+  else {
+    const fullText = [shareTitle, shareText, shareUrl].filter(Boolean).join('\n')
     try {
-      await navigator.clipboard.writeText(fullText);
-    } catch {
+      await navigator.clipboard.writeText(fullText)
+    }
+    catch {
       // Clipboard blocked — still show notice
     }
-    if (shareNoticeTimer) clearTimeout(shareNoticeTimer);
-    shareNotice.value = 'Copied to clipboard!';
+    if (shareNoticeTimer)
+      clearTimeout(shareNoticeTimer)
+    shareNotice.value = 'Copied to clipboard!'
     shareNoticeTimer = setTimeout(() => {
-      shareNotice.value = null;
-    }, 4000);
+      shareNotice.value = null
+    }, 4000)
   }
-};
+}
 </script>
 
 <style scoped>

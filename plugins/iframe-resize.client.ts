@@ -7,12 +7,13 @@
  */
 export default defineNuxtPlugin(() => {
   // Only runs when actually embedded
-  if (window.self === window.top) return
+  if (window.self === window.top)
+    return
 
   const post = () => {
     window.parent.postMessage(
       { type: 'nk-resize', height: document.documentElement.scrollHeight },
-      '*'
+      '*',
     )
   }
 
@@ -21,5 +22,5 @@ export default defineNuxtPlugin(() => {
 
   // Also post on route changes (SPA navigation)
   const router = useRouter()
-  router.afterEach(() => nextTick(post))
+  router.afterEach(async () => nextTick(post))
 })

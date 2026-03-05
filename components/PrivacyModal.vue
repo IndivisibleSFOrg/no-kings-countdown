@@ -14,7 +14,9 @@
       >
         <!-- Header -->
         <div class="flex items-center justify-between px-5 py-4 border-b border-isf-tinted">
-          <h2 class="font-bold text-isf-navy text-lg">Privacy Statement</h2>
+          <h2 class="font-bold text-isf-navy text-lg">
+            Privacy Statement
+          </h2>
           <button
             class="text-isf-slate hover:text-isf-navy bg-transparent rounded-full p-1.5 transition-colors"
             aria-label="Close"
@@ -58,14 +60,15 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted } from 'vue'
 
-const emit = defineEmits<{ close: [] }>();
+const emit = defineEmits<{ close: [] }>()
 
-const onKeydown = (e: KeyboardEvent) => {
-  if (e.key === 'Escape') emit('close');
-};
+function onKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape')
+    emit('close')
+}
 
-onMounted(() => document.addEventListener('keydown', onKeydown));
-onUnmounted(() => document.removeEventListener('keydown', onKeydown));
+onMounted(() => document.addEventListener('keydown', onKeydown))
+onUnmounted(() => document.removeEventListener('keydown', onKeydown))
 </script>

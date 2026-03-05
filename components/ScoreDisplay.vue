@@ -1,13 +1,15 @@
 <template>
   <div v-if="campaignActions.length > 0" class="relative flex items-center gap-4">
-
     <!-- ── Left: score + share ────────────────────────────────────────── -->
     <div class="flex flex-col items-end gap-2">
       <div class="text-right">
-        <span class="font-sans text-2xl font-bold leading-none"
+        <span
+          class="font-sans text-2xl font-bold leading-none"
           :class="completedCount === totalAvailable && totalAvailable > 0 ? 'text-isf-green' : 'text-isf-gold-dark'"
         >{{ completedCount }}/{{ totalAvailable }}</span>
-        <p class="text-xs text-isf-slate mt-0.5">completed so far</p>
+        <p class="text-xs text-isf-slate mt-0.5">
+          completed so far
+        </p>
       </div>
       <button
         id="tour-share-progress"
@@ -70,87 +72,93 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, inject } from 'vue';
-import { Share2 } from 'lucide-vue-next';
-import type { ActionItem } from '~/composables/googleSheets';
-import { formatDateKey } from '~/composables/dateHelpers';
-import { useActionCompletion } from '~/composables/useActionCompletion';
+import type { ActionItem } from '~/composables/googleSheets'
+import { Share2 } from 'lucide-vue-next'
+import { computed, inject, ref } from 'vue'
+import { formatDateKey } from '~/composables/dateHelpers'
+import { useActionCompletion } from '~/composables/useActionCompletion'
 
 interface Props {
-  actions: ActionItem[];
+  actions: ActionItem[]
 }
 
-const props = defineProps<Props>();
-const { completedKeys } = useActionCompletion();
-const { isDevMode } = useDevMode();
-const openDetail = inject<(action: ActionItem) => void>('openDetail', () => {});
+const props = defineProps<Props>()
+const { completedKeys } = useActionCompletion()
+const { isDevMode } = useDevMode()
+const openDetail = inject<(action: ActionItem) => void>('openDetail', () => {})
 
-const DOW_LABELS = ['M', 'T', 'W', 'R', 'F', 'S', 'X'];
+const DOW_LABELS = ['M', 'T', 'W', 'R', 'F', 'S', 'X']
 
-const HAPPY_EMOJIS = ['😄', '🚀', '🍾', '🎉', '✨', '🌟', '💪', '🎊', '🥳'];
-const happyEmoji = (key: string) => HAPPY_EMOJIS[
-  [...key].reduce((n, c) => n + c.charCodeAt(0), 0) % HAPPY_EMOJIS.length
-];
+const HAPPY_EMOJIS = ['😄', '🚀', '🍾', '🎉', '✨', '🌟', '💪', '🎊', '🥳']
+function happyEmoji(key: string) {
+  return HAPPY_EMOJIS[
+    [...key].reduce((n, c) => n + c.charCodeAt(0), 0) % HAPPY_EMOJIS.length
+  ]
+}
 
-const SAD_EMOJIS = ['😕', '😔', '😞', '😟', '🙁', '😣', '😩', '💔', '😿'];
-const sadEmoji = (key: string) => SAD_EMOJIS[
-  [...key].reduce((n, c) => n + c.charCodeAt(0), 0) % SAD_EMOJIS.length
-];
-
-
+const SAD_EMOJIS = ['😕', '😔', '😞', '😟', '🙁', '😣', '😩', '💔', '😿']
+function sadEmoji(key: string) {
+  return SAD_EMOJIS[
+    [...key].reduce((n, c) => n + c.charCodeAt(0), 0) % SAD_EMOJIS.length
+  ]
+}
 
 // ── Sorted actions ────────────────────────────────────────────────────────
 const sortedActions = computed(() =>
   [...props.actions].sort((a, b) => a.date.getTime() - b.date.getTime()),
-);
+)
 
 // ── Campaign actions: drop outliers before the 1st of the last action's month
 // e.g. Feb 27/28 bleed-in entries are excluded when the campaign is in March.
 // In dev mode, skip the filter so testing actions on earlier dates are visible.
 const campaignActions = computed(() => {
-  const sorted = sortedActions.value;
-  if (!sorted.length) return sorted;
-  if (isDevMode.value) return sorted;
-  const last = sorted[sorted.length - 1].date;
-  const campaignStart = new Date(last.getFullYear(), last.getMonth(), 1);
-  return sorted.filter(a => a.date >= campaignStart);
-});
+  const sorted = sortedActions.value
+  if (!sorted.length)
+    return sorted
+  if (isDevMode.value)
+    return sorted
+  const last = sorted[sorted.length - 1].date
+  const campaignStart = new Date(last.getFullYear(), last.getMonth(), 1)
+  return sorted.filter(a => a.date >= campaignStart)
+})
 
 // ── Calendar offset: empty cells before first action ─────────────────────
 // Mon-start: (getDay() + 6) % 7 → Mon=0, Tue=1, … Sun=6
 const startOffset = computed(() =>
   campaignActions.value.length ? (campaignActions.value[0].date.getDay() + 6) % 7 : 0,
-);
+)
 
 // ── Per-dot data: one cell per day from first to last action ─────────────
 // Mirrors CalendarView's day-by-day iteration so each dot lands on the
 // correct weekday column, with empty spacer cells for actionless days.
 const calendarDots = computed(() => {
-  if (!campaignActions.value.length) return [];
-  const now = new Date();
-  now.setHours(23, 59, 59, 999);
-  const todayKey = formatDateKey(new Date());
+  if (!campaignActions.value.length)
+    return []
+  const now = new Date()
+  now.setHours(23, 59, 59, 999)
+  const todayKey = formatDateKey(new Date())
 
   // Build a date → action lookup
-  const byKey = new Map(campaignActions.value.map(a => [formatDateKey(a.date), a]));
+  const byKey = new Map(campaignActions.value.map(a => [formatDateKey(a.date), a]))
 
-  const first = campaignActions.value[0].date;
-  const last = campaignActions.value[campaignActions.value.length - 1].date;
+  const first = campaignActions.value[0].date
+  const last = campaignActions.value[campaignActions.value.length - 1].date
 
-  const cells: Array<{ key: string; action: ActionItem | null; label: string; isCompleted: boolean; isAvailable: boolean; isToday: boolean; cls: string; empty: boolean }> = [];
-  const cur = new Date(first);
+  const cells: Array<{ key: string, action: ActionItem | null, label: string, isCompleted: boolean, isAvailable: boolean, isToday: boolean, cls: string, empty: boolean }> = []
+  const cur = new Date(first)
+  // eslint-disable-next-line no-unmodified-loop-condition
   while (cur <= last) {
-    const key = formatDateKey(cur);
-    const action = byKey.get(key);
+    const key = formatDateKey(cur)
+    const action = byKey.get(key)
     if (action) {
-      const isCompleted = completedKeys.value.has(key);
-      const isAvailable = cur <= now;
-      const isToday = key === todayKey;
+      const isCompleted = completedKeys.value.has(key)
+      const isAvailable = cur <= now
+      const isToday = key === todayKey
       cells.push({
         key,
         action,
-        label: cur.toLocaleString('en-US', { month: 'short', day: 'numeric' })
-          + ' – ' + (isCompleted ? `completed ${happyEmoji(key)}` : isToday ? 'still time today ❓' : isAvailable ? `incomplete ${sadEmoji(key)}` : 'upcoming'),
+        label: `${cur.toLocaleString('en-US', { month: 'short', day: 'numeric' })
+        } – ${isCompleted ? `completed ${happyEmoji(key)}` : isToday ? 'still time today ❓' : isAvailable ? `incomplete ${sadEmoji(key)}` : 'upcoming'}`,
         isCompleted,
         isAvailable,
         isToday,
@@ -162,60 +170,67 @@ const calendarDots = computed(() => {
             : isAvailable
               ? 'bg-isf-red'
               : 'bg-gray-200',
-      });
-    } else {
-      cells.push({ key: `empty-${key}`, action: null, label: '', isCompleted: false, isAvailable: false, isToday: false, empty: true, cls: '' });
+      })
     }
-    cur.setDate(cur.getDate() + 1);
+    else {
+      cells.push({ key: `empty-${key}`, action: null, label: '', isCompleted: false, isAvailable: false, isToday: false, empty: true, cls: '' })
+    }
+    cur.setDate(cur.getDate() + 1)
   }
-  return cells;
-});
+  return cells
+})
 
-const totalAvailable = computed(() => calendarDots.value.filter(d => !d.empty && d.isAvailable).length);
-const completedCount = computed(() => calendarDots.value.filter(d => !d.empty && d.isCompleted).length);
+const totalAvailable = computed(() => calendarDots.value.filter(d => !d.empty && d.isAvailable).length)
+const completedCount = computed(() => calendarDots.value.filter(d => !d.empty && d.isCompleted).length)
 
 // ── Emoji grid for share text (calendar-aligned) ──────────────────────────
-const emojiGrid = computed(() => {
-  const pad = Array(startOffset.value).fill('⬛');
+const _emojiGrid = computed(() => {
+  const pad = Array.from({ length: startOffset.value }, () => '⬛')
   const cells = [
     ...pad,
     ...calendarDots.value.map(d =>
       d.empty ? '⬛' : d.isCompleted ? '✅' : d.isToday ? '❓' : d.isAvailable ? '❌' : '⬜',
     ),
-  ];
-  const rows: string[] = [];
+  ]
+  const rows: string[] = []
   for (let i = 0; i < cells.length; i += 7) {
-    rows.push(cells.slice(i, i + 7).join(''));
+    rows.push(cells.slice(i, i + 7).join(''))
   }
-  return rows.join('\n');
-});
+  return rows.join('\n')
+})
 
 const shareText = computed(() =>
   `No Kings Countdown ✊\n${completedCount.value}/${totalAvailable.value} civic actions completed so far\n\nJoin me! https://nokingscountdown.org`,
-);
+)
 
 // ── Share handler ─────────────────────────────────────────────────────────
-const shareNotice = ref<string | null>(null);
-let shareNoticeTimer: ReturnType<typeof setTimeout> | null = null;
-const { trackShareProgress } = useAnalytics();
+const shareNotice = ref<string | null>(null)
+let shareNoticeTimer: ReturnType<typeof setTimeout> | null = null
+const { trackShareProgress } = useAnalytics()
 
-const handleShare = async () => {
-  trackShareProgress();
+async function handleShare() {
+  trackShareProgress()
   if (navigator.share) {
     try {
-      await navigator.share({ text: shareText.value });
-    } catch {
+      await navigator.share({ text: shareText.value })
+    }
+    catch {
       // user cancelled — ignore
     }
-  } else {
+  }
+  else {
     try {
-      await navigator.clipboard.writeText(shareText.value);
-    } catch {
+      await navigator.clipboard.writeText(shareText.value)
+    }
+    catch {
       // clipboard may be blocked; still show notice anyway
     }
-    if (shareNoticeTimer) clearTimeout(shareNoticeTimer);
-    shareNotice.value = 'Message copied to clipboard! Paste it on social media or in a text to share.';
-    shareNoticeTimer = setTimeout(() => { shareNotice.value = null; }, 6000);
+    if (shareNoticeTimer)
+      clearTimeout(shareNoticeTimer)
+    shareNotice.value = 'Message copied to clipboard! Paste it on social media or in a text to share.'
+    shareNoticeTimer = setTimeout(() => {
+      shareNotice.value = null
+    }, 6000)
   }
-};
+}
 </script>

@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+import { computed } from 'vue'
 
 /**
  * Composable for dev mode state and toggle.
@@ -15,31 +15,35 @@ import { computed } from 'vue';
  *  - `isDevMode`: ComputedRef<boolean> — reactive dev mode state
  *  - `toggle`: function — flip between explicit on/off (no-op in production)
  */
-export const useDevMode = () => {
-  const route = useRoute();
-  const { settings, set } = useSettings();
+export function useDevMode() {
+  const route = useRoute()
+  const { settings, set } = useSettings()
 
   const autoValue = computed(() => {
     // env= query param is only honored in local dev mode
     if (import.meta.dev) {
-      if (route.query.env === 'dev') return true;
-      if (route.query.env === 'prd') return false;
+      if (route.query.env === 'dev')
+        return true
+      if (route.query.env === 'prd')
+        return false
     }
-    return false; // default to prd even on localhost
-  });
+    return false // default to prd even on localhost
+  })
 
   const isDevMode = computed(() => {
     // In production, dev mode is always off — no overrides are respected
-    if (!import.meta.dev) return false;
-    return settings.value.devModeOverride !== null ? settings.value.devModeOverride : autoValue.value;
-  });
+    if (!import.meta.dev)
+      return false
+    return settings.value.devModeOverride !== null ? settings.value.devModeOverride : autoValue.value
+  })
 
   const toggle = () => {
     // Toggle is a no-op outside of local dev mode
-    if (!import.meta.dev) return;
+    if (!import.meta.dev)
+      return
     // Flip from the current effective value and persist across reloads.
-    set('devModeOverride', !isDevMode.value);
-  };
+    set('devModeOverride', !isDevMode.value)
+  }
 
-  return { isDevMode, toggle };
-};
+  return { isDevMode, toggle }
+}

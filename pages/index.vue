@@ -20,7 +20,7 @@ useHead({
     { name: 'twitter:url', content: 'https://nokingscountdown.org/' },
     { name: 'twitter:title', content: 'No Kings Countdown' },
     { name: 'twitter:description', content: 'A daily action calendar counting down to the No Kings March on March 28, 2026' },
-    { name: 'twitter:image', content: 'https://nokingscountdown.org/og-image.webp' }
-  ]
-});
+    { name: 'twitter:image', content: 'https://nokingscountdown.org/og-image.webp' },
+  ],
+})
 </script>

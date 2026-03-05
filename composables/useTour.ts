@@ -1,5 +1,5 @@
-import { driver } from 'driver.js';
-import type { Config, DriveStep } from 'driver.js';
+import type { Config, DriveStep } from 'driver.js'
+import { driver } from 'driver.js'
 
 const baseConfig: Partial<Config> = {
   showProgress: true,
@@ -12,26 +12,33 @@ const baseConfig: Partial<Config> = {
   nextBtnText: 'Next →',
   prevBtnText: '← Back',
   doneBtnText: 'Done',
-};
+}
 
 // Module-level flag so concurrent tours don't fight each other.
 // Set true when any driver starts, false in its onDestroyed.
-let anyTourActive = false;
+let anyTourActive = false
 
 /** Run `fn` once no other tour is active, polling every 200 ms. */
-const whenTourIdle = (fn: () => void) => {
-  if (!anyTourActive) { fn(); return; }
+function whenTourIdle(fn: () => void) {
+  if (!anyTourActive) {
+    fn()
+    return
+  }
   const id = setInterval(() => {
-    if (!anyTourActive) { clearInterval(id); fn(); }
-  }, 200);
-};
+    if (!anyTourActive) {
+      clearInterval(id)
+      fn()
+    }
+  }, 200)
+}
 
 /** Tour for the main landing page. Call inside onMounted. */
 export function useHomeTour() {
-  const { settings, set } = useSettings();
+  const { settings, set } = useSettings()
 
   const startHomeTour = () => {
-    if (settings.value.tourSeenHome) return;
+    if (settings.value.tourSeenHome)
+      return
 
     const steps: DriveStep[] = [
       {
@@ -84,38 +91,41 @@ export function useHomeTour() {
           align: 'center',
         },
       },
-    ];
+    ]
 
     // Only include steps whose target element exists in the DOM
     const validSteps = steps.filter(
       s => !s.element || !!document.querySelector(s.element as string),
-    );
-    if (!validSteps.length) return;
+    )
+    if (!validSteps.length)
+      return
 
     const driverObj = driver({
       ...baseConfig,
       steps: validSteps,
       onDestroyed: () => {
-        anyTourActive = false;
-        set('tourSeenHome', true);
+        anyTourActive = false
+        set('tourSeenHome', true)
       },
-    });
+    })
 
-    anyTourActive = true;
-    driverObj.drive();
-  };
+    anyTourActive = true
+    driverObj.drive()
+  }
 
-  return { startHomeTour };
+  return { startHomeTour }
 }
 
 /** Tour for the action-detail modal. Call inside onMounted of ActionModal. */
 export function useModalTour() {
-  const { settings, set } = useSettings();
+  const { settings, set } = useSettings()
 
   const startModalTour = () => {
-    if (settings.value.tourSeenModal) return;
+    if (settings.value.tourSeenModal)
+      return
     // Don't overwhelm new users — wait until the home tour has been seen
-    if (!settings.value.tourSeenHome) return;
+    if (!settings.value.tourSeenHome)
+      return
 
     const allSteps: DriveStep[] = [
       {
@@ -138,53 +148,52 @@ export function useModalTour() {
           align: 'center',
         },
       },
-    ];
+    ]
 
     // Only include steps whose target element exists in the DOM
     const validSteps = allSteps.filter(
       s => !s.element || !!document.querySelector(s.element as string),
-    );
-    if (!validSteps.length) return;
+    )
+    if (!validSteps.length)
+      return
 
     const driverObj = driver({
       ...baseConfig,
       steps: validSteps,
       onDestroyed: () => {
-        anyTourActive = false;
-        set('tourSeenModal', true);
+        anyTourActive = false
+        set('tourSeenModal', true)
       },
-    });
+    })
 
-    anyTourActive = true;
-    driverObj.drive();
-  };
+    anyTourActive = true
+    driverObj.drive()
+  }
 
-  return { startModalTour };
+  return { startModalTour }
 }
 
 /** Tour shown immediately after the user completes their first action. */
 export function useShareTour() {
-  const { settings, set } = useSettings();
-
-  const startShareTour = (detailShareSelector?: string) => {
-    if (settings.value.tourSeenShare) return;
-    whenTourIdle(() => _driveShare(detailShareSelector));
-  };
+  const { settings, set } = useSettings()
 
   const _driveShare = (detailShareSelector?: string) => {
-    if (settings.value.tourSeenShare) return;
+    if (settings.value.tourSeenShare)
+      return
 
     const allSteps: DriveStep[] = [
-      ...(detailShareSelector ? [{
-        element: detailShareSelector,
-        popover: {
-          title: 'Share This Action',
-          description:
+      ...(detailShareSelector
+        ? [{
+            element: detailShareSelector,
+            popover: {
+              title: 'Share This Action',
+              description:
             'Nice work! Let your network know what you just did — sharing this specific action can inspire others to take it too.',
-          side: 'left' as const,
-          align: 'center' as const,
-        },
-      }] : []),
+              side: 'left' as const,
+              align: 'center' as const,
+            },
+          }]
+        : []),
       {
         element: '#tour-share-progress',
         popover: {
@@ -195,26 +204,33 @@ export function useShareTour() {
           align: 'end',
         },
       },
-    ];
+    ]
 
     // Only include steps whose target element exists in the DOM
     const validSteps = allSteps.filter(
       s => !s.element || !!document.querySelector(s.element as string),
-    );
-    if (!validSteps.length) return;
+    )
+    if (!validSteps.length)
+      return
 
     const driverObj = driver({
       ...baseConfig,
       steps: validSteps,
       onDestroyed: () => {
-        anyTourActive = false;
-        set('tourSeenShare', true);
+        anyTourActive = false
+        set('tourSeenShare', true)
       },
-    });
+    })
 
-    anyTourActive = true;
-    driverObj.drive();
-  };
+    anyTourActive = true
+    driverObj.drive()
+  }
 
-  return { startShareTour };
+  const startShareTour = (detailShareSelector?: string) => {
+    if (settings.value.tourSeenShare)
+      return
+    whenTourIdle(() => _driveShare(detailShareSelector))
+  }
+
+  return { startShareTour }
 }
