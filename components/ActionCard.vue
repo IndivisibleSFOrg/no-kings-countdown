@@ -64,11 +64,11 @@
         <div v-if="!isFuture" class="absolute top-2 right-2 flex items-center gap-1.5">
           <button
             :id="`tour-card-share-${formatDateKey(action.date)}`"
-            class="text-white/80 hover:text-white transition-colors p-0.5 drop-shadow" aria-label="Share"
+            class="rounded-full w-7 h-7 flex items-center justify-center bg-state-incomplete hover:brightness-110 text-white transition-colors" aria-label="Share"
             @click.stop="shareAction"
           >
             <svg
-              xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 -translate-x-0.5" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
             >
               <circle cx="18" cy="5" r="3" />
@@ -130,11 +130,11 @@
           <div v-if="!isFuture || isDev" class="absolute top-2 right-2 flex items-center gap-1.5">
             <button
               :id="`tour-card-share-${formatDateKey(action.date)}`"
-              class="text-white/80 hover:text-white transition-colors p-0.5 drop-shadow" aria-label="Share"
+              class="rounded-full w-7 h-7 flex items-center justify-center bg-state-incomplete hover:brightness-110 text-white transition-colors" aria-label="Share"
               @click.stop="shareAction"
             >
               <svg
-                xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 -translate-x-0.5" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
               >
                 <circle cx="18" cy="5" r="3" />
