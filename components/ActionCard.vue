@@ -8,7 +8,11 @@
   >
     <div class="action-card-inner">
       <!-- Front -->
-      <div class="action-card-face action-card-front rounded-lg overflow-hidden">
+      <div
+        class="action-card-face action-card-front rounded-lg overflow-hidden"
+        :class="{ 'cursor-pointer': isDev && isFuture }"
+        @click="isDev && isFuture ? isFlipped = true : undefined"
+      >
         <img
           :src="action.image_front.image_url || defaultImage"
           :alt="action.headline"
@@ -94,8 +98,8 @@
       <!-- Back -->
       <div
         class="action-card-face action-card-back rounded-lg overflow-hidden flex flex-col"
-        :class="{ 'cursor-pointer': !isFuture }"
-        @click="!isFuture ? openDetail(props.action) : undefined"
+        :class="{ 'cursor-pointer': !isFuture || isDev }"
+        @click="(!isFuture || isDev) ? openDetail(props.action) : undefined"
       >
         <!-- Upper 50%: image -->
         <div class="relative h-1/2 flex-shrink-0">
@@ -138,7 +142,7 @@
 
           <!-- CTA link — only in grid view (not calendar, where the modal carries it) -->
           <a
-            v-if="!allowModal && !isFuture && action.link_url && action.link_url !== '#'"
+            v-if="!allowModal && (!isFuture || isDev) && action.link_url && action.link_url !== '#'"
             :href="action.link_url"
             target="_blank"
             rel="noopener noreferrer"
@@ -156,7 +160,7 @@
           <!-- Bottom row + share notice: absolutely pinned to bottom of lower half -->
           <div class="absolute bottom-0 left-0 right-0 px-3 pb-3 flex flex-col-reverse gap-1">
             <div class="flex items-center justify-end">
-              <div v-if="!isFuture" class="flex items-center gap-1.5">
+              <div v-if="!isFuture || isDev" class="flex items-center gap-1.5">
                 <!-- Share button -->
                 <button
                   :id="`tour-card-share-${formatDateKey(action.date)}`"
