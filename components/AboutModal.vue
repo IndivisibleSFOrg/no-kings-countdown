@@ -91,9 +91,9 @@
           <!-- Build & data info -->
           <div class="text-[10px] leading-[0.8rem] text-isf-blue space-y-1">
             <div>
-              <span class="font-semibold">code:</span> <a :href="`https://github.com/IndivisibleSFOrg/no-kings-countdown/tree/${buildInfo.ref}`" target="_blank" rel="noopener noreferrer" class="underline hover:text-isf-blue transition-colors">{{ buildInfo.ref }}</a>
-              @
-              <a :href="`https://github.com/IndivisibleSFOrg/no-kings-countdown/commit/${buildInfo.fullSha}`" target="_blank" rel="noopener noreferrer" class="underline hover:text-isf-blue transition-colors">{{ buildInfo.shortSha }}</a>
+              <span class="font-semibold">code:</span>
+              <a :href="`https://github.com/IndivisibleSFOrg/no-kings-countdown/releases/tag/${buildInfo.baseTag}`" target="_blank" rel="noopener noreferrer" class="underline hover:text-isf-blue transition-colors">{{ buildInfo.baseTag }}</a>{{ buildInfo.offset }}+<a :href="`https://github.com/IndivisibleSFOrg/no-kings-countdown/commit/${buildInfo.shortSha}`" target="_blank" rel="noopener noreferrer" class="underline hover:text-isf-blue transition-colors">{{ buildInfo.shortSha }}</a>
+              (<a :href="`https://github.com/IndivisibleSFOrg/no-kings-countdown/tree/${buildInfo.ref}`" target="_blank" rel="noopener noreferrer" class="underline hover:text-isf-blue transition-colors">{{ buildInfo.ref }}</a>)
             </div>
             <div>
               <span class="font-semibold">deployed:</span> {{ buildInfo.date }}
@@ -139,13 +139,23 @@ const config = useRuntimeConfig()
 
 const buildInfo = computed(() => {
   const sha = config.public.commitSha as string
+  const shortSha = config.public.commitShortSha as string
   const ref = config.public.commitRef as string
   const date = config.public.buildDate as string
   const iso = new Date(date).toISOString()
   const [datePart, timePart] = iso.split('T')
+  // Parse git describe output: "1.1.0-11-g893686e" or "1.1.0" (exact tag)
+  const withoutDirty = sha.replace(/\+$/, '')
+  const gHashMatch = withoutDirty.match(/-(\d+)-g([0-9a-f]+)$/)
+  const baseTag = gHashMatch
+    ? withoutDirty.slice(0, withoutDirty.length - gHashMatch[0].length)
+    : withoutDirty
+  const offset = gHashMatch ? `-${gHashMatch[1]}` : ''
+  const resolvedShortSha = shortSha || gHashMatch?.[2] || sha.slice(0, 7)
   return {
-    shortSha: sha.slice(0, 7),
-    fullSha: sha,
+    baseTag,
+    offset,
+    shortSha: resolvedShortSha,
     ref,
     date: `${datePart} ${timePart.slice(0, 5)} UTC`,
   }
