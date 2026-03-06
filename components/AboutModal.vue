@@ -96,7 +96,9 @@
               (<a :href="`https://github.com/IndivisibleSFOrg/no-kings-countdown/tree/${buildInfo.ref}`" target="_blank" rel="noopener noreferrer" class="underline hover:text-isf-blue transition-colors">{{ buildInfo.ref }}</a>)
             </div>
             <div>
-              <span class="font-semibold">deployed:</span> {{ buildInfo.date }}
+              <span class="font-semibold">deployed:</span>
+              <a v-if="buildInfo.runUrl" :href="buildInfo.runUrl" target="_blank" rel="noopener noreferrer" class="underline hover:text-isf-blue transition-colors">{{ buildInfo.date }}</a>
+              <span v-else>{{ buildInfo.date }}</span>
             </div>
             <div v-if="fetchedAt" class="flex items-center gap-1">
               <span class="font-semibold">actions:</span>
@@ -152,12 +154,14 @@ const buildInfo = computed(() => {
     : withoutDirty
   const offset = gHashMatch ? `-${gHashMatch[1]}` : ''
   const resolvedShortSha = shortSha || gHashMatch?.[2] || sha.slice(0, 7)
+  const runId = config.public.runId as string
   return {
     baseTag,
     offset,
     shortSha: resolvedShortSha,
     ref,
     date: `${datePart} ${timePart.slice(0, 5)} UTC`,
+    runUrl: runId ? `https://github.com/IndivisibleSFOrg/no-kings-countdown/actions/runs/${runId}` : null,
   }
 })
 

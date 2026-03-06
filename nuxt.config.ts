@@ -102,6 +102,7 @@ export default defineNuxtConfig({
       commitShortSha: process.env.NUXT_PUBLIC_COMMIT_SHORT_SHA || gitShortSha,
       commitRef: process.env.NUXT_PUBLIC_COMMIT_REF || gitBranch,
       buildDate: process.env.NUXT_PUBLIC_BUILD_DATE || new Date().toISOString(),
+      runId: process.env.NUXT_PUBLIC_RUN_ID || '',
       sheetUrl: process.env.NUXT_PUBLIC_SHEET_URL || 'https://docs.google.com/spreadsheets/d/1LBJiAlm4tKg9nYosVB98t4lW59QJYBYCkZArwWyygTQ/export?format=csv&gid=1665550594',
     },
   },
