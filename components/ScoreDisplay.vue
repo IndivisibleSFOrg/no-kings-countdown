@@ -112,29 +112,17 @@ const sortedActions = computed(() =>
   [...props.actions].sort((a, b) => a.date.getTime() - b.date.getTime()),
 )
 
-// ── Campaign actions: drop outliers before the 1st of the last action's month
-// e.g. Feb 27/28 bleed-in entries are excluded when the campaign is in March.
-// In dev mode, skip the filter so testing actions on earlier dates are visible.
-const campaignActions = computed(() => {
-  const sorted = sortedActions.value
-  if (!sorted.length)
-    return sorted
-  if (isDevMode.value)
-    return sorted
-  const last = sorted[sorted.length - 1].date
-  const campaignStart = new Date(last.getFullYear(), last.getMonth(), 1)
-  return sorted.filter(a => a.date >= campaignStart)
-})
+// ── Campaign actions: all actions, sorted. No month filtering — the calendar
+// grid shows only rows (weeks) that contain at least one action, so outliers
+// on adjacent months simply appear in their own week rows.
+const campaignActions = computed(() => sortedActions.value)
 
-// ── Calendar offset: empty cells before first action ─────────────────────
-// Mon-start: (getDay() + 6) % 7 → Mon=0, Tue=1, … Sun=6
-const startOffset = computed(() =>
-  campaignActions.value.length ? (campaignActions.value[0].date.getDay() + 6) % 7 : 0,
-)
+// ── Calendar offset: always 0 — each row in the grid is a full Mon–Sun week
+const startOffset = computed(() => 0)
 
-// ── Per-dot data: one cell per day from first to last action ─────────────
-// Mirrors CalendarView's day-by-day iteration so each dot lands on the
-// correct weekday column, with empty spacer cells for actionless days.
+// ── Per-dot data: one full Mon–Sun week per row, only weeks with ≥1 action ─
+// Walking complete weeks keeps every dot in the correct weekday column;
+// weeks that contain no actions are dropped entirely.
 const calendarDots = computed(() => {
   if (!campaignActions.value.length)
     return []
@@ -145,45 +133,60 @@ const calendarDots = computed(() => {
   // Build a date → action lookup
   const byKey = new Map(campaignActions.value.map(a => [formatDateKey(a.date), a]))
 
-  const first = campaignActions.value[0].date
-  const last = campaignActions.value[campaignActions.value.length - 1].date
+  // Snap to the Monday of the first action's week and Sunday of the last's
+  const firstAction = campaignActions.value[0].date
+  const lastAction = campaignActions.value[campaignActions.value.length - 1].date
+  const weekStart = new Date(firstAction)
+  weekStart.setDate(firstAction.getDate() - (firstAction.getDay() + 6) % 7)
+  const weekEnd = new Date(lastAction)
+  weekEnd.setDate(lastAction.getDate() + (6 - (lastAction.getDay() + 6) % 7))
 
-  const cells: Array<{ key: string, action: ActionItem | null, label: string, isCompleted: boolean, isAvailable: boolean, isToday: boolean, isShared: boolean, cls: string, empty: boolean }> = []
-  const cur = new Date(first)
+  interface DotCell { key: string, action: ActionItem | null, label: string, isCompleted: boolean, isAvailable: boolean, isToday: boolean, isShared: boolean, cls: string, empty: boolean }
+
+  const result: DotCell[] = []
+  const cur = new Date(weekStart)
   // eslint-disable-next-line no-unmodified-loop-condition
-  while (cur <= last) {
-    const key = formatDateKey(cur)
-    const action = byKey.get(key)
-    if (action) {
-      const isCompleted = completedKeys.value.has(key)
-      const isShared = sharedKeys.value.has(key)
-      const isAvailable = cur <= now
-      const isToday = key === todayKey
-      cells.push({
-        key,
-        action,
-        label: `${cur.toLocaleString('en-US', { month: 'short', day: 'numeric' })
-        } – ${isCompleted ? `completed ${happyEmoji(key)}` : isToday ? 'still time today ❓' : isAvailable ? `incomplete ${sadEmoji(key)}` : 'upcoming'}`,
-        isCompleted,
-        isAvailable,
-        isToday,
-        isShared,
-        empty: false,
-        cls: isCompleted
-          ? 'bg-state-complete'
-          : isToday
-            ? 'bg-state-today'
-            : isAvailable
-              ? 'bg-state-incomplete'
-              : 'bg-state-future',
-      })
+  while (cur <= weekEnd) {
+    // Build 7 cells for this week, then include the week only if it has an action
+    const week: DotCell[] = []
+    let hasAction = false
+    for (let d = 0; d < 7; d++) {
+      const key = formatDateKey(cur)
+      const action = byKey.get(key) ?? null
+      if (action) {
+        hasAction = true
+        const isCompleted = completedKeys.value.has(key)
+        const isShared = sharedKeys.value.has(key)
+        const isAvailable = cur <= now
+        const isToday = key === todayKey
+        week.push({
+          key,
+          action,
+          label: `${cur.toLocaleString('en-US', { month: 'short', day: 'numeric' })
+          } – ${isCompleted ? `completed ${happyEmoji(key)}` : isToday ? 'still time today ❓' : isAvailable ? `incomplete ${sadEmoji(key)}` : 'upcoming'}`,
+          isCompleted,
+          isAvailable,
+          isToday,
+          isShared,
+          empty: false,
+          cls: isCompleted
+            ? 'bg-state-complete'
+            : isToday
+              ? 'bg-state-today'
+              : isAvailable
+                ? 'bg-state-incomplete'
+                : 'bg-state-future',
+        })
+      }
+      else {
+        week.push({ key: `empty-${key}`, action: null, label: '', isCompleted: false, isAvailable: false, isToday: false, isShared: false, empty: true, cls: '' })
+      }
+      cur.setDate(cur.getDate() + 1)
     }
-    else {
-      cells.push({ key: `empty-${key}`, action: null, label: '', isCompleted: false, isAvailable: false, isToday: false, isShared: false, empty: true, cls: '' })
-    }
-    cur.setDate(cur.getDate() + 1)
+    if (hasAction)
+      result.push(...week)
   }
-  return cells
+  return result
 })
 
 const totalAvailable = computed(() => calendarDots.value.filter(d => !d.empty && d.isAvailable).length)
