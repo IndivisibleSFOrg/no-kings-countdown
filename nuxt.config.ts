@@ -35,11 +35,20 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     'nuxt-gtag',
+    '@nuxtjs/plausible',
   ],
 
   gtag: {
-    id: 'G-JFBM21YLDK',
+    id: process.env.NUXT_PUBLIC_GTAG_ID || 'G-JFBM21YLDK',
     enabled: process.env.NODE_ENV === 'production',
+  },
+
+  plausible: {
+    // Domain defaults to window.location.hostname when not set.
+    // Enable only when NUXT_PUBLIC_PLAUSIBLE_DOMAIN is provided.
+    enabled: !!process.env.NUXT_PUBLIC_PLAUSIBLE_DOMAIN,
+    autoPageviews: true,
+    ignoredHostnames: ['localhost'],
   },
 
   app: {
@@ -104,6 +113,10 @@ export default defineNuxtConfig({
       buildDate: process.env.NUXT_PUBLIC_BUILD_DATE || new Date().toISOString(),
       runId: process.env.NUXT_PUBLIC_RUN_ID || '',
       sheetUrl: process.env.NUXT_PUBLIC_SHEET_URL || 'https://docs.google.com/spreadsheets/d/1LBJiAlm4tKg9nYosVB98t4lW59QJYBYCkZArwWyygTQ/export?format=csv&gid=1665550594',
+      // Analytics provider activation keys — empty string disables the provider.
+      gtagId: process.env.NUXT_PUBLIC_GTAG_ID || 'G-JFBM21YLDK',
+      plausibleDomain: process.env.NUXT_PUBLIC_PLAUSIBLE_DOMAIN || '',
+      posthogKey: process.env.NUXT_PUBLIC_POSTHOG_KEY || '',
     },
   },
 })
