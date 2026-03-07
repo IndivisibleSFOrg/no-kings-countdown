@@ -25,10 +25,9 @@ yarn-error.log*
 .fleet
 .idea
 
-# Local env files
-.env
-.env.*
-!.env.example
+# Local env files — .env is committed (public values only); .env.local is for secrets/overrides
+.env.local
+.env.*.local
 
 # TypeScript
 *.tsbuildinfo
