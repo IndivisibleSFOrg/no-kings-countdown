@@ -121,7 +121,7 @@ export default defineNuxtConfig({
       runId: process.env.NUXT_PUBLIC_RUN_ID || '',
       sheetUrl,
       // Analytics provider activation keys — empty string disables the provider.
-      gtagId: process.env.NUXT_PUBLIC_GTAG_ID || '',
+      // GA is activated via nuxt-gtag's own runtimeConfig (public.gtag.id).
       plausibleDomain: process.env.NUXT_PUBLIC_PLAUSIBLE_DOMAIN || '',
       posthogKey: process.env.NUXT_PUBLIC_POSTHOG_KEY || '',
     },

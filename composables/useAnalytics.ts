@@ -13,7 +13,7 @@ import { createPostHogProvider } from './analytics/posthogProvider'
  * implementation — no call-site changes are needed.
  *
  * Provider activation:
- *   GA        — config.public.gtagId         (env: NUXT_PUBLIC_GTAG_ID)
+ *   GA        — config.public.gtag.id        (env: NUXT_PUBLIC_GTAG_ID, via nuxt-gtag module)
  *   Plausible — config.public.plausibleDomain (env: NUXT_PUBLIC_PLAUSIBLE_DOMAIN)
  *   PostHog   — config.public.posthogKey      (env: NUXT_PUBLIC_POSTHOG_KEY)
  */
@@ -22,7 +22,7 @@ export function useAnalytics() {
 
   const providers: IAnalyticsProvider[] = []
 
-  if (config.public.gtagId)
+  if ((config.public.gtag as { id?: string } | undefined)?.id)
     providers.push(createGaProvider())
 
   if (config.public.plausibleDomain)
