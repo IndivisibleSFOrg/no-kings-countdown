@@ -71,6 +71,7 @@ jobs:
       - name: Generate static site
         run: pnpm generate
         env:
+          NUXT_PUBLIC_SHEET_URL: ${{ secrets.NUXT_PUBLIC_SHEET_URL }}
           NUXT_PUBLIC_COMMIT_SHA: ${{ steps.version.outputs.describe }}
           NUXT_PUBLIC_COMMIT_SHORT_SHA: ${{ steps.version.outputs.short_sha }}
           NUXT_PUBLIC_COMMIT_REF: ${{ github.ref_name }}
