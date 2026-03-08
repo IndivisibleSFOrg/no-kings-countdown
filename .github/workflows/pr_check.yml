@@ -52,6 +52,9 @@ jobs:
           echo "describe=$(git describe --always --tags --dirty=+)" >> $GITHUB_OUTPUT
           echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
+      - name: Load .env into environment
+        run: grep -v '^#' .env | grep '=' >> $GITHUB_ENV
+
       - name: Production build
         run: pnpm generate
         env:

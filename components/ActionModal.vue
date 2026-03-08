@@ -183,7 +183,10 @@ async function shareAction() {
   trackShareDetail(formatDateKey(props.action.date))
   const shareTitle = `No Kings Countdown: ${props.action.headline}`
   const shareText = props.action.social_message || props.action.details || ''
-  const shareUrl = window.location.href
+  const _url = new URL(window.location.href)
+  _url.searchParams.set('utm_source', 'share')
+  _url.searchParams.set('utm_campaign', 'action')
+  const shareUrl = _url.toString()
 
   if (typeof navigator !== 'undefined' && navigator.share) {
     try {

@@ -104,12 +104,13 @@ function openDetail(action: ActionItem) {
     return
   selectedAction.value = action
   trackViewDetail(formatDateKey(action.date))
-  router.push({ query: { ...route.query, detail: formatDateKey(action.date) } })
+  router.push({ query: { ...route.query, date: formatDateKey(action.date) } })
 }
 
 function closeDetail() {
   selectedAction.value = null
   const q = { ...route.query }
+  delete q.date
   delete q.detail
   router.push({ query: q })
 }
@@ -133,7 +134,7 @@ const effectiveLayout = computed<LayoutType>(() =>
 watch(
   () => props.actions,
   (actions) => {
-    const key = route.query.detail as string | undefined
+    const key = (route.query.date || route.query.detail) as string | undefined
     if (key && actions.length && !selectedAction.value && !highlightDate.value) {
       const match = actions.find(a => formatDateKey(a.date) === key)
       if (match && (!isActionFuture(match) || isDev.value)) {
@@ -155,10 +156,16 @@ watch(
           selectedAction.value = match
           trackViewDetail(formatDateKey(match.date))
         }
+        // Normalize legacy ?detail= param to ?date= in the URL bar
+        if (route.query.detail) {
+          const { detail: _detail, ...rest } = route.query
+          router.replace({ query: { ...rest, date: key } })
+        }
       }
       else if (match && isActionFuture(match) && !isDev.value) {
-        // Strip the blocked future detail param from the URL silently
+        // Strip the blocked future date/detail param from the URL silently
         const q = { ...route.query }
+        delete q.date
         delete q.detail
         router.replace({ query: q })
       }
