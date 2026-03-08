@@ -156,6 +156,11 @@ watch(
           selectedAction.value = match
           trackViewDetail(formatDateKey(match.date))
         }
+        // Normalize legacy ?detail= param to ?date= in the URL bar
+        if (route.query.detail) {
+          const { detail: _detail, ...rest } = route.query
+          router.replace({ query: { ...rest, date: key } })
+        }
       }
       else if (match && isActionFuture(match) && !isDev.value) {
         // Strip the blocked future date/detail param from the URL silently
