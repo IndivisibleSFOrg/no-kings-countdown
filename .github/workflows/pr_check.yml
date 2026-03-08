@@ -1,0 +1,62 @@
+# Verify PRs targeting main: typecheck + production build must pass.
+# Branch protection requires this workflow to succeed before merging.
+name: PR Check
+
+on:
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm typecheck
+
+      - name: Get version info
+        id: version
+        run: |
+          echo "describe=$(git describe --always --tags --dirty=+)" >> $GITHUB_OUTPUT
+          echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Production build
+        run: pnpm generate
+        env:
+          NUXT_PUBLIC_COMMIT_SHA: ${{ steps.version.outputs.describe }}
+          NUXT_PUBLIC_COMMIT_SHORT_SHA: ${{ steps.version.outputs.short_sha }}
+          NUXT_PUBLIC_COMMIT_REF: ${{ github.head_ref }}
+          NUXT_PUBLIC_BUILD_DATE: ${{ github.event.pull_request.updated_at }}
+          NUXT_PUBLIC_RUN_ID: ${{ github.run_id }}
