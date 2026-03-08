@@ -28,6 +28,13 @@ const gitShortSha = (() => {
   }
 })()
 
+const sheetUrl = (() => {
+  const url = process.env.NUXT_PUBLIC_SHEET_URL
+  if (!url)
+    throw new Error('NUXT_PUBLIC_SHEET_URL is required — set it in .env')
+  return url
+})()
+
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
@@ -35,11 +42,20 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     'nuxt-gtag',
+    '@nuxtjs/plausible',
   ],
 
   gtag: {
-    id: 'G-JFBM21YLDK',
-    enabled: process.env.NODE_ENV === 'production',
+    id: process.env.NUXT_PUBLIC_GTAG_ID || '',
+    enabled: process.env.NODE_ENV === 'production' && !!process.env.NUXT_PUBLIC_GTAG_ID,
+  },
+
+  plausible: {
+    // Domain defaults to window.location.hostname when not set.
+    // Enable only when NUXT_PUBLIC_PLAUSIBLE_DOMAIN is provided.
+    enabled: !!process.env.NUXT_PUBLIC_PLAUSIBLE_DOMAIN,
+    autoPageviews: true,
+    ignoredHostnames: ['localhost'],
   },
 
   app: {
@@ -103,7 +119,11 @@ export default defineNuxtConfig({
       commitRef: process.env.NUXT_PUBLIC_COMMIT_REF || gitBranch,
       buildDate: process.env.NUXT_PUBLIC_BUILD_DATE || new Date().toISOString(),
       runId: process.env.NUXT_PUBLIC_RUN_ID || '',
-      sheetUrl: process.env.NUXT_PUBLIC_SHEET_URL || 'https://docs.google.com/spreadsheets/d/1LBJiAlm4tKg9nYosVB98t4lW59QJYBYCkZArwWyygTQ/export?format=csv&gid=1665550594',
+      sheetUrl,
+      // Analytics provider activation keys — empty string disables the provider.
+      // GA is activated via nuxt-gtag's own runtimeConfig (public.gtag.id).
+      plausibleDomain: process.env.NUXT_PUBLIC_PLAUSIBLE_DOMAIN || '',
+      posthogKey: process.env.NUXT_PUBLIC_POSTHOG_KEY || '',
     },
   },
 })
