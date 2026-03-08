@@ -20,7 +20,7 @@
   --isf-tinted:       #e8edf5;
 
   /* Semantic state colors */
-  --state-today:         var(--isf-blue);
+  --state-today:         var(--isf-gold);
   --state-complete:      var(--isf-green);
   --state-complete-dark: var(--isf-green-dark);
   --state-incomplete:    #9ca3af;

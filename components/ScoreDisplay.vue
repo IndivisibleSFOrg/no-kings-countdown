@@ -22,7 +22,7 @@
       </button>
     </div>
 
-    <!-- ── Right: calendar dot grid ──────────────────────────────────── -->
+    <!-- ── Right: calendar day grid ──────────────────────────────────── -->
     <div>
       <!-- Day-of-week header -->
       <div class="grid gap-0.5 mb-0.5" style="grid-template-columns: repeat(7, 1fr)">
@@ -33,18 +33,18 @@
           {{ label }}
         </div>
       </div>
-      <!-- Dots: offset padding + action dots -->
+      <!-- Days: offset padding + day cells -->
       <div class="grid gap-0.5" style="grid-template-columns: repeat(7, 1fr)">
         <div v-for="n in startOffset" :key="`pad-${n}`" class="w-3 h-3" />
         <div
-          v-for="dot in calendarDots" :key="dot.key"
+          v-for="day in calendarDays" :key="day.key"
           class="w-3 h-3 rounded-sm transition-colors duration-300 relative flex items-center justify-center" :class="[
-            dot.empty ? '' : dot.cls,
-            dot.action && (dot.isAvailable || isDevMode) ? 'cursor-pointer hover:brightness-110' : 'cursor-default',
-          ]" :title="dot.label"
-          @click="dot.action && (dot.isAvailable || isDevMode) ? openDetail(dot.action) : undefined"
+            day.empty ? '' : day.cls,
+            day.action && (day.isAvailable || isDevMode) ? 'cursor-pointer hover:brightness-110' : 'cursor-default',
+          ]" :title="day.label"
+          @click="day.action && (day.isAvailable || isDevMode) ? openDetail(day.action) : undefined"
         >
-          <span v-if="dot.isShared" class="w-1 h-1 rounded-full bg-white/80 pointer-events-none" />
+          <span v-if="!day.empty" class="w-1.5 h-1.5 rounded-full pointer-events-none" :class="day.isShared ? 'bg-state-complete' : day.isToday ? 'bg-state-today' : 'bg-state-future'" />
         </div>
       </div>
     </div>
@@ -112,10 +112,10 @@ const campaignActions = computed(() => sortedActions.value)
 // ── Calendar offset: always 0 — each row in the grid is a full Mon–Sun week
 const startOffset = computed(() => 0)
 
-// ── Per-dot data: one full Mon–Sun week per row, only weeks with ≥1 action ─
-// Walking complete weeks keeps every dot in the correct weekday column;
+// ── Per-day data: one full Mon–Sun week per row, only weeks with ≥1 action ─
+// Walking complete weeks keeps every day in the correct weekday column;
 // weeks that contain no actions are dropped entirely.
-const calendarDots = computed(() => {
+const calendarDays = computed(() => {
   if (!campaignActions.value.length)
     return []
   const now = new Date()
@@ -133,14 +133,14 @@ const calendarDots = computed(() => {
   const weekEnd = new Date(lastAction)
   weekEnd.setDate(lastAction.getDate() + (6 - (lastAction.getDay() + 6) % 7))
 
-  interface DotCell { key: string, action: ActionItem | null, label: string, isCompleted: boolean, isAvailable: boolean, isToday: boolean, isShared: boolean, cls: string, empty: boolean }
+  interface DayCell { key: string, action: ActionItem | null, label: string, isCompleted: boolean, isAvailable: boolean, isToday: boolean, isShared: boolean, cls: string, empty: boolean }
 
-  const result: DotCell[] = []
+  const result: DayCell[] = []
   const cur = new Date(weekStart)
   // eslint-disable-next-line no-unmodified-loop-condition
   while (cur <= weekEnd) {
     // Build 7 cells for this week, then include the week only if it has an action
-    const week: DotCell[] = []
+    const week: DayCell[] = []
     let hasAction = false
     for (let d = 0; d < 7; d++) {
       const key = formatDateKey(cur)
@@ -165,9 +165,7 @@ const calendarDots = computed(() => {
             ? 'bg-state-complete'
             : isToday
               ? 'bg-state-today'
-              : isAvailable
-                ? 'bg-state-incomplete'
-                : 'bg-state-future',
+              : 'bg-state-future',
         })
       }
       else {
@@ -181,15 +179,15 @@ const calendarDots = computed(() => {
   return result
 })
 
-const totalAvailable = computed(() => calendarDots.value.filter(d => !d.empty && d.isAvailable).length)
-const completedCount = computed(() => calendarDots.value.filter(d => !d.empty && d.isCompleted).length)
+const totalAvailable = computed(() => calendarDays.value.filter(d => !d.empty && d.isAvailable).length)
+const completedCount = computed(() => calendarDays.value.filter(d => !d.empty && d.isCompleted).length)
 
 // ── Emoji grid for share text (calendar-aligned) ──────────────────────────
 const _emojiGrid = computed(() => {
   const pad = Array.from({ length: startOffset.value }, () => '⬛')
   const cells = [
     ...pad,
-    ...calendarDots.value.map(d =>
+    ...calendarDays.value.map(d =>
       d.empty ? '⬛' : d.isCompleted ? '✅' : d.isToday ? '❓' : d.isAvailable ? '❌' : '⬜',
     ),
   ]

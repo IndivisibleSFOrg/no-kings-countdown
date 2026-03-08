@@ -25,7 +25,7 @@
           >
             {{ dateLabel }}
           </div>
-          <div v-if="isToday" class="bg-state-today text-white text-xs font-semibold px-2 py-0.5 rounded-full">
+          <div v-if="isToday" class="bg-state-today text-isf-blue text-xs font-semibold px-2 py-0.5 rounded-full">
             Today
           </div>
           <div
@@ -117,7 +117,7 @@
             >
               {{ dateLabel }}
             </div>
-            <div v-if="isToday" class="bg-state-today text-white text-xs font-semibold px-2 py-0.5 rounded-full">
+            <div v-if="isToday" class="bg-state-today text-isf-blue text-xs font-semibold px-2 py-0.5 rounded-full">
               Today
             </div>
             <div
