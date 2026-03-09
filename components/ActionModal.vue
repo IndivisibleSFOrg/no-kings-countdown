@@ -39,34 +39,22 @@
             @click.stop
           >{{ action.image_back.artist_name || action.image_front.artist_name || '©' }}</a>
 
-          <!-- Close button -->
-          <button
-            class="absolute top-3 right-3 text-white bg-black/30 hover:bg-black/50 rounded-full p-1.5 transition-colors"
-            aria-label="Close"
-            @click="emit('close')"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-        </div>
-
-        <!-- Scrollable content -->
-        <div class="flex-1 min-h-0 overflow-y-auto p-5 flex flex-col gap-4">
-          <div class="flex items-start gap-2">
-            <h2
-              class="font-bold text-isf-blue-dark text-lg leading-snug flex-1"
-              v-html="renderInlineMarkdown(action.headline)"
-            />
-            <!-- Share — always available for revealed actions -->
+          <!-- Share + completion + close: upper right -->
+          <div class="absolute top-2 right-2 flex items-center gap-1.5">
             <button
               id="tour-action-share"
-              class="flex-shrink-0 text-isf-slate hover:text-isf-red transition-colors p-0.5 mt-0.5"
+              class="rounded-full w-8 h-8 flex items-center justify-center hover:brightness-110 text-white transition-colors"
+              :class="isShared(action.date) ? 'bg-state-complete' : 'bg-state-incomplete'"
               aria-label="Share"
-              @click="shareAction"
+              @click="handleShareButtonClick"
+              @pointerdown="isShared(action.date) ? holdShare.start($event) : undefined"
+              @pointerup="holdShare.cancel()"
+              @pointerleave="holdShare.cancel()"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 -translate-x-0.5" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+              >
                 <circle cx="18" cy="5" r="3" />
                 <circle cx="6" cy="12" r="3" />
                 <circle cx="18" cy="19" r="3" />
@@ -74,38 +62,57 @@
                 <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
               </svg>
             </button>
-            <!-- Completion toggle -->
-            <div class="relative flex-shrink-0 mt-0.5">
-              <button
-                id="tour-action-complete"
-                class="rounded-full w-8 h-8 flex items-center justify-center shadow transition-colors"
-                :class="isComplete(action.date) ? 'bg-state-complete hover:bg-state-complete-dark' : 'bg-state-incomplete hover:brightness-110'"
-                :title="isComplete(action.date) ? 'Hold to mark incomplete' : 'Mark complete'"
-                @click="handleCompleteButtonClick(action.date)"
-                @pointerdown="isComplete(action.date) ? holdComplete.start($event) : undefined"
-                @pointerup="holdComplete.cancel()"
-                @pointerleave="holdComplete.cancel()"
+            <button
+              id="tour-action-complete"
+              class="rounded-full w-8 h-8 flex items-center justify-center shadow transition-colors"
+              :class="isComplete(action.date) ? 'bg-state-complete hover:brightness-110' : 'bg-state-incomplete hover:brightness-110'"
+              :title="isComplete(action.date) ? 'Hold to mark incomplete' : 'Mark complete'"
+              @click="handleCompleteButtonClick(action.date)"
+              @pointerdown="isComplete(action.date) ? holdComplete.start($event) : undefined"
+              @pointerup="holdComplete.cancel()"
+              @pointerleave="holdComplete.cancel()"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              </button>
-              <!-- Hold-to-reset hint -->
-              <Transition
-                enter-active-class="transition-all duration-200 ease-out"
-                leave-active-class="transition-all duration-200 ease-in"
-                enter-from-class="opacity-0 translate-y-1"
-                leave-to-class="opacity-0 translate-y-1"
-              >
-                <div
-                  v-if="holdComplete.showHint.value"
-                  class="absolute top-full right-0 mt-1.5 pointer-events-none z-10 bg-black/80 text-white text-xs px-2 py-1 rounded whitespace-nowrap"
-                >
-                  Hold briefly to reset
-                </div>
-              </Transition>
-            </div>
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </button>
+            <button
+              class="text-white bg-black/30 hover:bg-black/50 rounded-full p-1.5 transition-colors"
+              aria-label="Close"
+              @click="emit('close')"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
           </div>
+
+          <!-- Hold-to-reset hint -->
+          <Transition
+            enter-active-class="transition-all duration-200 ease-out"
+            leave-active-class="transition-all duration-200 ease-in"
+            enter-from-class="opacity-0 translate-y-1"
+            leave-to-class="opacity-0 translate-y-1"
+          >
+            <div
+              v-if="holdShare.showHint.value || holdComplete.showHint.value"
+              class="absolute top-12 right-2 pointer-events-none z-10 bg-black/80 text-white text-xs px-2 py-1 rounded whitespace-nowrap"
+            >
+              Hold briefly to reset
+            </div>
+          </Transition>
+        </div>
+
+        <!-- Scrollable content -->
+        <div class="flex-1 min-h-0 overflow-y-auto p-5 flex flex-col gap-4">
+          <h2
+            class="font-bold text-isf-blue-dark text-lg leading-snug"
+            v-html="renderInlineMarkdown(action.headline)"
+          />
 
           <div
             v-if="action.details"
@@ -136,14 +143,15 @@
         <Transition
           enter-active-class="transition-all duration-300 ease-out"
           leave-active-class="transition-all duration-300 ease-in"
-          enter-from-class="opacity-0 translate-y-2"
-          leave-to-class="opacity-0 translate-y-2"
+          enter-from-class="opacity-0 scale-95"
+          leave-to-class="opacity-0 scale-95"
         >
           <div
             v-if="shareNotice"
-            class="absolute bottom-4 left-4 right-4 bg-isf-blue-dark text-white text-xs text-center px-4 py-2.5 rounded-lg shadow-lg"
+            class="absolute inset-x-0 top-1/2 -translate-y-1/2 mx-2 bg-[#f9c430]/80 rounded-lg px-4 py-3 flex items-center justify-center cursor-pointer z-20"
+            @click="shareNotice = null"
           >
-            {{ shareNotice }}
+            <span class="text-isf-blue-dark font-semibold text-sm text-center leading-snug">{{ shareNotice }}</span>
           </div>
         </Transition>
       </div>
@@ -157,6 +165,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import defaultImage from '~/assets/christy-dalmat-y_z3rURYpR0-unsplash.webp'
 import { formatDateKey } from '~/composables/dateHelpers'
 import { useActionCompletion } from '~/composables/useActionCompletion'
+import { useActionSharing } from '~/composables/useActionSharing'
 import { useHoldToUnset } from '~/composables/useHoldToUnset'
 import { renderInlineMarkdown, renderMarkdown } from '~/composables/useMarkdown'
 
@@ -168,10 +177,15 @@ const props = defineProps<Props>()
 const emit = defineEmits<{ close: [] }>()
 
 const { isComplete, toggleComplete, completedKeys } = useActionCompletion()
+const { isShared, markShared, toggleShared } = useActionSharing()
 const { trackShareDetail, trackCompleteAction, trackUncompleteAction, trackCtaClick } = useAnalytics()
 const { startModalTour } = useModalTour()
 const { startShareTour } = useShareTour()
 const { settings } = useSettings()
+
+const holdShare = useHoldToUnset(() => {
+  toggleShared(props.action.date)
+})
 
 const holdComplete = useHoldToUnset(() => {
   if (isComplete(props.action.date)) {
@@ -206,11 +220,21 @@ const dateLabel = computed(() => {
 const shareNotice = ref<string | null>(null)
 let shareNoticeTimer: ReturnType<typeof setTimeout> | null = null
 
+function handleShareButtonClick() {
+  if (holdShare.holdCompleted.value) {
+    holdShare.holdCompleted.value = false
+    return
+  }
+  shareAction()
+}
+
 async function shareAction() {
   trackShareDetail(formatDateKey(props.action.date))
   const shareTitle = `No Kings Countdown: ${props.action.headline}`
   const shareText = props.action.social_message || props.action.details || ''
   const _url = new URL(window.location.href)
+  _url.search = ''
+  _url.searchParams.set('date', formatDateKey(props.action.date))
   _url.searchParams.set('utm_source', 'share')
   _url.searchParams.set('utm_campaign', 'action')
   const shareUrl = _url.toString()
@@ -218,6 +242,7 @@ async function shareAction() {
   if (typeof navigator !== 'undefined' && navigator.share) {
     try {
       await navigator.share({ title: shareTitle, text: shareText, url: shareUrl })
+      markShared(props.action.date)
     }
     catch {
       // User cancelled — ignore
@@ -231,12 +256,13 @@ async function shareAction() {
     catch {
       // Clipboard blocked — still show notice
     }
+    markShared(props.action.date)
     if (shareNoticeTimer)
       clearTimeout(shareNoticeTimer)
-    shareNotice.value = 'Copied to clipboard! Paste on social media or in a text to share.'
+    shareNotice.value = 'Share message copied to clipboard'
     shareNoticeTimer = setTimeout(() => {
       shareNotice.value = null
-    }, 6000)
+    }, 5000)
   }
 }
 
@@ -250,7 +276,11 @@ onMounted(() => {
   // Start modal tour for first-time modal viewers (deferred to let DOM settle)
   nextTick(() => setTimeout(startModalTour, 500))
 })
-onUnmounted(() => document.removeEventListener('keydown', onKeydown))
+onUnmounted(() => {
+  document.removeEventListener('keydown', onKeydown)
+  if (shareNoticeTimer)
+    clearTimeout(shareNoticeTimer)
+})
 </script>
 
 <style scoped>
