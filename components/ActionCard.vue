@@ -67,7 +67,10 @@
             class="rounded-full w-7 h-7 flex items-center justify-center hover:brightness-110 text-white transition-colors"
             :class="isShared(action.date) ? 'bg-state-complete' : 'bg-state-incomplete'"
             aria-label="Share"
-            @click.stop="shareAction"
+            @click.stop="handleShareButtonClick"
+            @pointerdown.stop="isShared(action.date) ? holdShare.start($event) : undefined"
+            @pointerup.stop="holdShare.cancel()"
+            @pointerleave="holdShare.cancel()"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 -translate-x-0.5" viewBox="0 0 24 24" fill="none"
@@ -135,7 +138,10 @@
               class="rounded-full w-7 h-7 flex items-center justify-center hover:brightness-110 text-white transition-colors"
               :class="isShared(action.date) ? 'bg-state-complete' : 'bg-state-incomplete'"
               aria-label="Share"
-              @click.stop="shareAction"
+              @click.stop="handleShareButtonClick"
+              @pointerdown.stop="isShared(action.date) ? holdShare.start($event) : undefined"
+              @pointerup.stop="holdShare.cancel()"
+              @pointerleave="holdShare.cancel()"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 -translate-x-0.5" viewBox="0 0 24 24" fill="none"
@@ -151,8 +157,11 @@
             <button
               class="rounded-full w-7 h-7 flex items-center justify-center shadow transition-colors"
               :class="isComplete(action.date) ? 'bg-state-complete hover:brightness-110' : 'bg-state-incomplete hover:brightness-110'"
-              :title="isComplete(action.date) ? 'Mark incomplete' : 'Mark complete'"
-              @click.stop="handleToggleComplete(action.date)"
+              :title="isComplete(action.date) ? 'Hold to mark incomplete' : 'Mark complete'"
+              @click.stop="handleCompleteButtonClick(action.date)"
+              @pointerdown.stop="isComplete(action.date) ? holdComplete.start($event) : undefined"
+              @pointerup.stop="holdComplete.cancel()"
+              @pointerleave="holdComplete.cancel()"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none"
@@ -225,6 +234,21 @@
         <span class="text-isf-blue-dark font-semibold text-sm text-center leading-snug">{{ shareNotice }}</span>
       </div>
     </Transition>
+
+    <!-- Hold-to-reset hint -->
+    <Transition
+      enter-active-class="transition-all duration-200 ease-out"
+      leave-active-class="transition-all duration-200 ease-in"
+      enter-from-class="opacity-0 translate-y-1"
+      leave-to-class="opacity-0 translate-y-1"
+    >
+      <div
+        v-if="holdShare.showHint.value || holdComplete.showHint.value"
+        class="absolute top-10 right-2 pointer-events-none z-30 bg-black/80 text-white text-xs px-2 py-1 rounded whitespace-nowrap"
+      >
+        Hold briefly to reset
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -235,6 +259,7 @@ import defaultImage from '~/assets/christy-dalmat-y_z3rURYpR0-unsplash.webp'
 import { formatDateKey } from '~/composables/dateHelpers'
 import { useActionCompletion } from '~/composables/useActionCompletion'
 import { useActionSharing } from '~/composables/useActionSharing'
+import { useHoldToUnset } from '~/composables/useHoldToUnset'
 import { renderInlineMarkdown, renderMarkdown } from '~/composables/useMarkdown'
 
 interface Props {
@@ -257,6 +282,17 @@ const { isComplete, toggleComplete, completedKeys } = useActionCompletion()
 const { isShared, markShared, toggleShared } = useActionSharing()
 const { trackShareDetail, trackCompleteAction, trackUncompleteAction } = useAnalytics()
 const { startShareTour } = useShareTour()
+
+const holdShare = useHoldToUnset(() => {
+  toggleShared(props.action.date)
+})
+
+const holdComplete = useHoldToUnset(() => {
+  if (isComplete(props.action.date)) {
+    toggleComplete(props.action.date)
+    trackUncompleteAction(formatDateKey(props.action.date))
+  }
+})
 
 const dateLabel = computed(() => {
   const d = props.action.date
@@ -297,29 +333,34 @@ onUnmounted(() => {
     clearTimeout(shareNoticeTimer)
 })
 
-// --- Completion toggle (direct, no modal) ---
-function handleToggleComplete(date: Date) {
-  const wasComplete = isComplete(date)
-  toggleComplete(date)
-  if (!wasComplete) {
+// --- Completion toggle (back face button) ---
+function handleCompleteButtonClick(date: Date) {
+  if (holdComplete.holdCompleted.value) {
+    holdComplete.holdCompleted.value = false
+    return
+  }
+  if (!isComplete(date)) {
+    toggleComplete(date)
     trackCompleteAction(formatDateKey(date))
     // On the very first completion ever, launch the share tour
     if (completedKeys.value.size === 1 && !settings.value.tourSeenShare) {
       nextTick(() => setTimeout(() => startShareTour(`#tour-card-share-${formatDateKey(date)}`), 300))
     }
   }
-  else {
-    trackUncompleteAction(formatDateKey(date))
+}
+
+// Short click always initiates sharing (even if already shared, so the user can
+// re-share via a different medium). A completed hold unsets the share state;
+// holdCompleted swallows the synthetic click that fires right after the hold.
+function handleShareButtonClick() {
+  if (holdShare.holdCompleted.value) {
+    holdShare.holdCompleted.value = false
+    return
   }
+  shareAction()
 }
 
 async function shareAction() {
-  // If already shared, toggle off and return
-  if (isShared(props.action.date)) {
-    toggleShared(props.action.date)
-    return
-  }
-
   trackShareDetail(formatDateKey(props.action.date))
   const shareTitle = `No Kings Countdown: ${props.action.headline}`
   const shareText = props.action.social_message || props.action.details || ''

@@ -75,17 +75,36 @@
               </svg>
             </button>
             <!-- Completion toggle -->
-            <button
-              id="tour-action-complete"
-              class="flex-shrink-0 rounded-full w-8 h-8 flex items-center justify-center shadow transition-colors mt-0.5"
-              :class="isComplete(action.date) ? 'bg-state-complete hover:bg-state-complete-dark' : 'bg-state-incomplete hover:brightness-110'"
-              :title="isComplete(action.date) ? 'Mark incomplete' : 'Mark complete'"
-              @click="handleToggleComplete(action.date)"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-            </button>
+            <div class="relative flex-shrink-0 mt-0.5">
+              <button
+                id="tour-action-complete"
+                class="rounded-full w-8 h-8 flex items-center justify-center shadow transition-colors"
+                :class="isComplete(action.date) ? 'bg-state-complete hover:bg-state-complete-dark' : 'bg-state-incomplete hover:brightness-110'"
+                :title="isComplete(action.date) ? 'Hold to mark incomplete' : 'Mark complete'"
+                @click="handleCompleteButtonClick(action.date)"
+                @pointerdown="isComplete(action.date) ? holdComplete.start($event) : undefined"
+                @pointerup="holdComplete.cancel()"
+                @pointerleave="holdComplete.cancel()"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </button>
+              <!-- Hold-to-reset hint -->
+              <Transition
+                enter-active-class="transition-all duration-200 ease-out"
+                leave-active-class="transition-all duration-200 ease-in"
+                enter-from-class="opacity-0 translate-y-1"
+                leave-to-class="opacity-0 translate-y-1"
+              >
+                <div
+                  v-if="holdComplete.showHint.value"
+                  class="absolute top-full right-0 mt-1.5 pointer-events-none z-10 bg-black/80 text-white text-xs px-2 py-1 rounded whitespace-nowrap"
+                >
+                  Hold briefly to reset
+                </div>
+              </Transition>
+            </div>
           </div>
 
           <div
@@ -138,6 +157,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import defaultImage from '~/assets/christy-dalmat-y_z3rURYpR0-unsplash.webp'
 import { formatDateKey } from '~/composables/dateHelpers'
 import { useActionCompletion } from '~/composables/useActionCompletion'
+import { useHoldToUnset } from '~/composables/useHoldToUnset'
 import { renderInlineMarkdown, renderMarkdown } from '~/composables/useMarkdown'
 
 interface Props {
@@ -153,18 +173,25 @@ const { startModalTour } = useModalTour()
 const { startShareTour } = useShareTour()
 const { settings } = useSettings()
 
-function handleToggleComplete(date: Date) {
-  const wasComplete = isComplete(date)
-  toggleComplete(date)
-  if (!wasComplete) {
+const holdComplete = useHoldToUnset(() => {
+  if (isComplete(props.action.date)) {
+    toggleComplete(props.action.date)
+    trackUncompleteAction(formatDateKey(props.action.date))
+  }
+})
+
+function handleCompleteButtonClick(date: Date) {
+  if (holdComplete.holdCompleted.value) {
+    holdComplete.holdCompleted.value = false
+    return
+  }
+  if (!isComplete(date)) {
+    toggleComplete(date)
     trackCompleteAction(formatDateKey(date))
     // On the very first completion ever, launch the share tour
     if (completedKeys.value.size === 1 && !settings.value.tourSeenShare) {
       nextTick(() => setTimeout(() => startShareTour('#tour-action-share'), 300))
     }
-  }
-  else {
-    trackUncompleteAction(formatDateKey(date))
   }
 }
 

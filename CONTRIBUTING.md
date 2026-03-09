@@ -21,7 +21,7 @@
 
 ### Commits
 - Commits to the feature branch may be made freely as work progresses
-- No one MUST commit directly to `main` without explicit maintainer instruction
+- No contributor may commit directly to `main` without explicit maintainer instruction
 - Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) format: `feat:`, `fix:`, `chore:`, `refactor:`, `docs:`, `test:`, etc. (e.g., `feat: add PostHog provider adapter`)
 - If the reason for a change is not self-evident from the diff, include a commit message body explaining the rationale
 - Temporary debug code (console.log, test flags, etc.) MUST be removed before the final commit
