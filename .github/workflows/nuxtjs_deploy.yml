@@ -2,10 +2,10 @@
 name: Deploy Nuxt site to Pages
 
 on:
-  # Runs on version tags (e.g. 1.2.3) — no leading prefix
+  # Runs on version tags (e.g. 1.2.3) — no leading prefix and no trailing suffix
   push:
     tags:
-      - "[0-9]*.[0-9]*.[0-9]*"
+      - "[0-9]+.[0-9]+.[0-9]+"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
