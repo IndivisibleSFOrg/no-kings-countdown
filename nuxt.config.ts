@@ -30,30 +30,35 @@ const gitShortSha = (() => {
 
 /**
  * Build an index of release versions from git tags.
- * Tags must follow semver X.Y.Z. For each unique major.minor, we record the
- * date of the first tag in that group (earliest patch release = release date).
+ * Only X.Y.0 tags are included — no patch releases.
+ * In non-production builds, X.Y.0-prerelease tags (e.g. 1.3.0-rc.0) are
+ * also included so release notes can be previewed before a final tag exists.
+ * Each entry uses the full tag name as the version key.
  * Sorted by version using git's version:refname sort (correct numeric order).
  */
+const isDev = process.env.NODE_ENV !== 'production'
+
 const releaseVersionIndex: { version: string, date: string }[] = (() => {
   try {
     const output = execSync(
       'git for-each-ref --sort=version:refname --format="%(refname:short) %(creatordate:short)" refs/tags',
     ).toString().trim()
-    const byMinor = new Map<string, string>() // "major.minor" -> earliest ISO date
+    // Production: only X.Y.0 final tags. Dev: also X.Y.0-prerelease tags.
+    const tagRe = isDev
+      ? /^\d+\.\d+\.0(-[\w.]+)?$/
+      : /^\d+\.\d+\.0$/
+    const entries: { version: string, date: string }[] = []
     for (const line of output.split('\n')) {
       const spaceIdx = line.indexOf(' ')
       if (spaceIdx === -1)
         continue
       const tag = line.slice(0, spaceIdx)
       const date = line.slice(spaceIdx + 1)
-      const m = tag.match(/^(\d+)\.(\d+)\.\d+$/)
-      if (!m || !date)
+      if (!tagRe.test(tag) || !date)
         continue
-      const key = `${m[1]}.${m[2]}`
-      if (!byMinor.has(key))
-        byMinor.set(key, date)
+      entries.push({ version: tag, date })
     }
-    return Array.from(byMinor.entries()).map(([version, date]) => ({ version, date }))
+    return entries
   }
   catch {
     return []
@@ -64,6 +69,15 @@ const releaseVersionIndex: { version: string, date: string }[] = (() => {
 const appMajorMinor = (() => {
   const m = gitDescribe.replace(/\+$/, '').match(/^(\d+)\.(\d+)/)
   return m ? `${m[1]}.${m[2]}` : '0.0'
+})()
+
+/**
+ * Full version for the current build, matching the releaseVersionIndex format:
+ * X.Y.0 for final releases, X.Y.0-prerelease for RC builds (e.g. 1.3.0-rc.0).
+ */
+const appVersion = (() => {
+  const m = gitDescribe.replace(/\+$/, '').match(/^(\d+\.\d+\.0(?:-[\w.]+)?)/)
+  return m ? m[1] : `${appMajorMinor}.0`
 })()
 
 const sheetUrl = (() => {
@@ -165,6 +179,7 @@ export default defineNuxtConfig({
       // Release announcement data built from git tags at generation time.
       releaseVersionIndex,
       appMajorMinor,
+      appVersion,
     },
   },
 })

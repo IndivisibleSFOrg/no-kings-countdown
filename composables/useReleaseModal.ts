@@ -23,6 +23,7 @@ function compareMajorMinor(a: string, b: string): number {
 export function useReleaseModal() {
   const config = useRuntimeConfig().public
   const appMajorMinor = config.appMajorMinor
+  const appVersion = config.appVersion
   const releaseVersionIndex = config.releaseVersionIndex
 
   const { settings, set } = useSettings()
@@ -40,6 +41,7 @@ export function useReleaseModal() {
 
   return {
     appMajorMinor,
+    appVersion,
     releaseVersionIndex,
     shouldShowReleaseNotes,
     markSeen,

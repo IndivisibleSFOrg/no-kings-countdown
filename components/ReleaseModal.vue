@@ -80,14 +80,14 @@ const emit = defineEmits<{
   close: []
 }>()
 
-const { appMajorMinor, releaseVersionIndex, markSeen } = useReleaseModal()
+const { appVersion, releaseVersionIndex, markSeen } = useReleaseModal()
 
 /** Versions listed newest-first in the dropdown. */
 const reversedIndex = computed(() =>
   [...releaseVersionIndex].reverse(),
 )
 
-const selectedVersion = ref(appMajorMinor)
+const selectedVersion = ref(appVersion)
 const renderedContent = ref('')
 const fetchError = ref(false)
 
@@ -102,7 +102,9 @@ async function loadNotes(version: string) {
   fetchError.value = false
   try {
     const normalizedBase = baseURL.endsWith('/') ? baseURL : `${baseURL}/`
-    const url = `${normalizedBase}releases/${version}.md`
+    // Strip any prerelease suffix so 1.3.0-rc.0 → 1.3.0.md
+    const fileName = version.replace(/-[\w.]+$/, '')
+    const url = `${normalizedBase}releases/${fileName}.md`
     const res = await fetch(url)
     if (!res.ok)
       throw new Error(`HTTP ${res.status}`)
