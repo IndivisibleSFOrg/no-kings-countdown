@@ -114,16 +114,13 @@
             </dt>
             <dd class="m-0">
               <a
-                :href="`https://github.com/IndivisibleSFOrg/no-kings-countdown/releases/tag/${buildInfo.baseTag}`"
+                :href="buildInfo.refUrl"
                 target="_blank" rel="noopener noreferrer" class="underline hover:text-isf-blue transition-colors"
-              >{{ buildInfo.baseTag }}</a>{{ buildInfo.offset }}+<a
+              >{{ buildInfo.ref }}</a>
+              (<a
                 :href="`https://github.com/IndivisibleSFOrg/no-kings-countdown/commit/${buildInfo.shortSha}`"
                 target="_blank" rel="noopener noreferrer" class="underline hover:text-isf-blue transition-colors"
-              >{{ buildInfo.shortSha }}</a>
-              (<a
-                :href="`https://github.com/IndivisibleSFOrg/no-kings-countdown/tree/${buildInfo.ref}`"
-                target="_blank" rel="noopener noreferrer" class="underline hover:text-isf-blue transition-colors"
-              >{{ buildInfo.ref }}</a>)
+              >{{ buildInfo.shortSha }}</a>{{ buildInfo.isDirty ? '+' : '' }})
             </dd>
             <dt class="font-semibold text-right">
               deployed
@@ -187,20 +184,17 @@ const buildInfo = computed(() => {
   const date = config.public.buildDate as string
   const iso = new Date(date).toISOString()
   const [datePart, timePart] = iso.split('T')
-  // Parse git describe output: "1.1.0-11-g893686e" or "1.1.0" (exact tag)
-  const withoutDirty = sha.replace(/\+$/, '')
-  const gHashMatch = withoutDirty.match(/-(\d+)-g([0-9a-f]+)$/)
-  const baseTag = gHashMatch
-    ? withoutDirty.slice(0, withoutDirty.length - gHashMatch[0].length)
-    : withoutDirty
-  const offset = gHashMatch ? `-${gHashMatch[1]}` : ''
-  const resolvedShortSha = shortSha || gHashMatch?.[2] || sha.slice(0, 7)
+  const isDirty = sha.endsWith('+')
+  const resolvedShortSha = shortSha || sha.replace(/\+$/, '').slice(0, 7)
   const runId = config.public.runId as string
+  const isTag = /^\d+\.\d+/.test(ref)
   return {
-    baseTag,
-    offset,
-    shortSha: resolvedShortSha,
     ref,
+    shortSha: resolvedShortSha,
+    isDirty,
+    refUrl: isTag
+      ? `https://github.com/IndivisibleSFOrg/no-kings-countdown/releases/tag/${ref}`
+      : `https://github.com/IndivisibleSFOrg/no-kings-countdown/tree/${ref}`,
     date: `${datePart} ${timePart.slice(0, 5)} UTC`,
     runUrl: runId ? `https://github.com/IndivisibleSFOrg/no-kings-countdown/actions/runs/${runId}` : null,
   }
