@@ -2,16 +2,9 @@
 name: Deploy Nuxt site to Pages
 
 on:
-  # Runs on version tags (e.g. 1.2.3) — no leading prefix and no trailing suffix
   push:
-    tags:
-      # Github's pattern matching support is crap, so we have to list out all the common version tag formats
-      - "[0-9].[0-9].[0-9]"
-      - "[0-9].[0-9].[0-9][0-9]"
-      - "[0-9].[0-9][0-9].[0-9]"
-      - "[0-9].[0-9][0-9].[0-9][0-9]"
 
-      # Allows you to run this workflow manually from the Actions tab
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -30,7 +23,23 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
+
+    # is_release_tag is used to determine whether we're running on a release
+    # tag, which should trigger a deployment, or on a non-release tag/branch,
+    # which should not trigger a deployment. All of this just because github 
+    # doesn't have regexps. F'n ludicrous.
+    outputs:
+      is_release_tag: ${{ steps.check_tag.outputs.is_release_tag }}
     steps:
+      - name: Check tag format
+        id: check_tag
+        run: |
+          if [[ "${{ github.ref_name }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "is_release_tag=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_release_tag=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -97,6 +106,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
+    if: github.event_name == 'workflow_dispatch' || needs.build.outputs.is_release_tag == 'true'
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
