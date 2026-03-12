@@ -2,23 +2,25 @@
   <div>
     <!-- Header -->
     <header class="bg-white border-b-4 border-isf-blue shadow-md">
-      <div class="max-w-7xl mx-auto px-4 py-6">
-        <div class="flex flex-col items-center md:flex-row md:items-center md:justify-between gap-4">
-          <!-- Hero text -->
-          <div id="tour-title" class="flex-1">
-            <h1 class="font-sans text-4xl font-black text-isf-blue leading-tight text-center md:text-left mb-1">
-              No Kings 3 Countdown
-            </h1>
-            <p class="text-base text-isf-blue text-center md:text-left">
-              Small daily actions with big impacts leading up to the <a href="https://nokings.org/" target="_blank" rel="noopener noreferrer" class="font-bold underline hover:text-isf-blue transition-colors">No Kings 3</a> march on March 28. Track and share your progress to help build community and momentum. <span class="italic">We need you!</span>
-              <NuxtLink to="/about" class="underline hover:text-isf-blue transition-colors font-bold">
-                Learn More
-              </NuxtLink>
-            </p>
-          </div>
+      <div class="relative max-w-7xl mx-auto px-4 py-3 pr-14">
+        <!-- Hamburger trigger — absolute upper-right -->
+        <button
+          id="tour-score"
+          class="absolute top-3 right-4 text-isf-blue hover:opacity-70 transition-opacity p-1.5 rounded"
+          aria-label="Open menu"
+          @click="menuOpen = true"
+        >
+          <Menu :size="24" />
+        </button>
 
-          <!-- Score + Share -->
-          <ScoreDisplay id="tour-score" :actions="props.actions" />
+        <!-- Hero text -->
+        <div id="tour-title">
+          <h1 class="font-sans text-4xl font-black text-isf-blue leading-tight mb-1">
+            No Kings 3 Countdown
+          </h1>
+          <p class="text-base text-isf-blue">
+            Create a daily habit of small actions with big impacts that build momentum toward <a href="https://nokings.org/" target="_blank" rel="noopener noreferrer" class="font-bold underline hover:text-isf-blue transition-colors">No Kings 3</a> on March 28. <br>Track and share your progress to help build the community that will repel authoritarianism in the United States.
+          </p>
         </div>
       </div>
     </header>
@@ -29,53 +31,24 @@
       <CalendarView v-else :actions="actions" />
     </main>
 
-    <!-- Footer -->
-    <footer id="tour-footer" class="mt-16 bg-isf-blue text-white py-5">
-      <div class="max-w-7xl mx-auto px-4">
-        <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
-          <NuxtLink to="/about" class="text-white/80 hover:text-white underline-offset-2 hover:underline transition-colors">
-            About
-          </NuxtLink>
-          <NuxtLink to="/privacy" class="text-white/80 hover:text-white underline-offset-2 hover:underline transition-colors">
-            Privacy Policy
-          </NuxtLink>
-          <a
-            href="https://github.com/IndivisibleSFOrg/no-kings-countdown" target="_blank" rel="noopener noreferrer"
-            class="text-white/80 hover:text-white underline-offset-2 hover:underline transition-colors"
-          >
-            GitHub Repo
-          </a>
-          <a
-            href="https://github.com/IndivisibleSFOrg/no-kings-countdown/issues" target="_blank"
-            rel="noopener noreferrer"
-            class="text-white/80 hover:text-white underline-offset-2 hover:underline transition-colors"
-          >
-            Report an Issue
-          </a>
-          <a
-            href="https://forms.gle/2Zic21S9eiaLqVPR7" target="_blank" rel="noopener noreferrer"
-            class="text-white/80 hover:text-white underline-offset-2 hover:underline transition-colors"
-          >
-            Suggest an Action
-          </a>
-        </nav>
-      </div>
-    </footer>
-
     <!-- Dev mode toggle (lower-left, local dev only) -->
     <DevModeToggle />
 
     <!-- Action detail overlay -->
     <ActionModal v-if="selectedAction" :action="selectedAction" @close="closeDetail" />
+
+    <!-- Sliding menu tray -->
+    <MenuTray :actions="props.actions" :open="menuOpen" @close="menuOpen = false" />
   </div>
 </template>
 
 <script setup lang="ts">
 import type { ActionItem } from '~/composables/googleSheets'
+import { Menu } from 'lucide-vue-next'
 import { computed, nextTick, onMounted, onUnmounted, provide, ref, watch } from 'vue'
 import { formatDateKey } from '~/composables/dateHelpers'
 import ActionModal from './ActionModal.vue'
-import ScoreDisplay from './ScoreDisplay.vue'
+import MenuTray from './MenuTray.vue'
 
 interface Props {
   actions: ActionItem[]
@@ -84,6 +57,8 @@ interface Props {
 const props = defineProps<Props>()
 const router = useRouter()
 const route = useRoute()
+
+const menuOpen = ref(false)
 
 // --- Detail overlay ---
 const selectedAction = ref<ActionItem | null>(null)

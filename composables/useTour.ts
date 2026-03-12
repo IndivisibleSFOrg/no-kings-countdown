@@ -55,9 +55,9 @@ export function useHomeTour() {
       {
         element: '#tour-score',
         popover: {
-          title: 'See and Share Your Progress',
+          title: 'Track and Share Your Progress',
           description:
-            'Your completed action count is shown here. The dot grid gives you a bird\'s-eye view of the whole campaign at a glance. Your progress is tracked only on your device — no personal data is collected or shared. Share your progress with friends to inspire others to join the movement!',
+            'Click here to open the menu — see your progress dot grid at a glance, share your results with friends, and find links to About, Privacy, and more.',
           side: 'bottom',
           align: 'end',
         },
@@ -68,16 +68,6 @@ export function useHomeTour() {
           title: 'Daily Actions',
           description:
             'Browse the calendar — cards will be revealed each day leading up to the No Kings March on March 28, 2026. Click on any revealed cards to see details and take action.',
-          side: 'top',
-          align: 'center',
-        },
-      },
-      {
-        element: '#tour-footer',
-        popover: {
-          title: 'More Links',
-          description:
-            'Find out more about this project on the About page, read our Privacy Policy, suggest a new action, or report an issue on GitHub.',
           side: 'top',
           align: 'center',
         },
