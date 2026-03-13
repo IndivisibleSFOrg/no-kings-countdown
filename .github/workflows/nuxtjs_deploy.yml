@@ -1,5 +1,5 @@
 # Workflow for building and deploying a Nuxt.js site to GitHub Pages
-name: Deploy Nuxt site to Pages
+name: "Deploy to GitHub Pages"
 
 on:
   push:

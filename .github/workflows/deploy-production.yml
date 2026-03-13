@@ -1,0 +1,24 @@
+name: "Deploy to Vercel Production"
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'  # matches x.y.z only
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Deploy to Vercel Production
+        run: |
+          npx vercel --token=${{ secrets.VERCEL_TOKEN }} --prod --yes \
+            --meta githubCommitRef=${{ github.ref_name }} \
+            --meta githubCommitSha=${{ github.sha }} \
+            --meta githubOrg=${{ github.repository_owner }} \
+            --meta githubRepo=${{ github.event.repository.name }} \
+            --meta githubCommitAuthorLogin=${{ github.actor }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
