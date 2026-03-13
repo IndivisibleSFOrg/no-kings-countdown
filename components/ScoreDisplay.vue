@@ -33,9 +33,8 @@
           {{ label }}
         </div>
       </div>
-      <!-- Days: offset padding + day cells -->
+      <!-- Days: day cells -->
       <div class="grid gap-0.5" style="grid-template-columns: repeat(7, 1fr)">
-        <div v-for="n in startOffset" :key="`pad-${n}`" class="w-3 h-3" />
         <div
           v-for="day in calendarDays" :key="day.key"
           class="w-3 h-3 rounded-sm transition-colors duration-300 relative flex items-center justify-center" :class="[
@@ -109,9 +108,6 @@ const sortedActions = computed(() =>
 // on adjacent months simply appear in their own week rows.
 const campaignActions = computed(() => sortedActions.value)
 
-// ── Calendar offset: always 0 — each row in the grid is a full Mon–Sun week
-const startOffset = computed(() => 0)
-
 // ── Per-day data: one full Mon–Sun week per row, only weeks with ≥1 action ─
 // Walking complete weeks keeps every day in the correct weekday column;
 // weeks that contain no actions are dropped entirely.
@@ -184,9 +180,7 @@ const completedCount = computed(() => calendarDays.value.filter(d => !d.empty &&
 
 // ── Emoji grid for share text (calendar-aligned) ──────────────────────────
 const _emojiGrid = computed(() => {
-  const pad = Array.from({ length: startOffset.value }, () => '⬛')
   const cells = [
-    ...pad,
     ...calendarDays.value.map(d =>
       d.empty ? '⬛' : d.isCompleted ? '✅' : d.isToday ? '❓' : d.isAvailable ? '❌' : '⬜',
     ),
