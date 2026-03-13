@@ -29,10 +29,26 @@
         <!-- Body -->
         <div class="px-5 py-5 space-y-3">
           <p class="text-isf-blue-dark text-base leading-relaxed">
-            This site uses Google Analytics to collect anonymous usage data (pages visited, time on site, city-level
-            location).
-            We have disabled Google signals and ads personalization. Google Analytics does not record your full IP
-            address.
+            This site uses <strong>Google Analytics</strong> to collect anonymous usage data (pages visited, time on
+            site, city-level location). We have disabled Google signals and ads personalization. Google Analytics does
+            not record your full IP address.
+          </p>
+          <p class="text-isf-blue-dark text-base leading-relaxed">
+            This site also uses <strong>Plausible Analytics</strong>, a privacy-focused service that sets no cookies
+            and collects no personal data or cross-site identifiers. Plausible records only anonymous, aggregate event
+            counts (e.g. which actions were viewed or completed). Data is processed under <a
+              href="https://plausible.io/data-policy"
+              target="_blank" rel="noopener" class="underline hover:text-isf-blue"
+            >Plausible's data policy</a>.
+          </p>
+          <p class="text-isf-blue-dark text-base leading-relaxed">
+            This site also uses <strong>PostHog</strong> to record the same named interaction events (e.g. action
+            viewed, action completed). We have disabled PostHog's autocapture, session recording, and automatic
+            pageview features — PostHog only receives the explicit events we send. Data is sent to PostHog Inc. and
+            governed by <a
+              href="https://posthog.com/privacy"
+              target="_blank" rel="noopener" class="underline hover:text-isf-blue"
+            >PostHog's Privacy Policy</a>.
           </p>
           <p class="text-isf-blue-dark text-base leading-relaxed">
             <strong>We use these data solely to understand how many people visit and which content is most useful to
@@ -40,14 +56,14 @@
               visitor data with anyone.</strong>
           </p>
           <p class="text-isf-blue-dark text-base leading-relaxed">
-            Analytics data is sent to Google and governed by <a
-              href="https://policies.google.com/privacy"
-              target="_blank" rel="noopener" class="underline hover:text-isf-blue"
-            >Google's Privacy Policy</a>. You can
-            opt out of Google Analytics entirely using <a
+            To opt out: use <a
               href="https://tools.google.com/dlpage/gaoptout"
               target="_blank" rel="noopener" class="underline hover:text-isf-blue"
-            >Google's opt-out tool</a>.
+            >Google's opt-out browser add-on</a> for Google Analytics; run
+            <code class="text-sm bg-isf-tinted px-1 rounded">localStorage.setItem('plausible_ignore','true')</code>
+            in your browser console to opt out of Plausible; or run
+            <code class="text-sm bg-isf-tinted px-1 rounded">posthog.opt_out_capturing()</code>
+            in your browser console to opt out of PostHog.
           </p>
           <p class="text-isf-blue-dark text-base leading-relaxed">
             Your action progress is saved locally on your device only and is transmitted only when you explicitly choose
