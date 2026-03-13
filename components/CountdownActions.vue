@@ -5,7 +5,6 @@
       <div class="relative max-w-7xl mx-auto px-4 py-3 pr-14">
         <!-- Hamburger trigger — absolute upper-right -->
         <button
-          id="tour-score"
           class="absolute top-3 right-4 text-isf-blue hover:opacity-70 transition-opacity p-1.5 rounded"
           aria-label="Open menu"
           @click="menuOpen = true"
@@ -14,7 +13,7 @@
         </button>
 
         <!-- Hero text -->
-        <div id="tour-title">
+        <div>
           <h1 class="font-sans text-4xl font-black text-isf-blue leading-tight mb-1">
             No Kings 3 Countdown
           </h1>
@@ -26,7 +25,7 @@
     </header>
 
     <!-- Main Content -->
-    <main id="tour-main" class="py-8 md:py-12 max-w-7xl mx-auto px-4">
+    <main class="py-8 md:py-12 max-w-7xl mx-auto px-4">
       <GridView v-if="effectiveLayout === 'grid'" :actions="actions" :highlight-date="highlightDate" />
       <CalendarView v-else :actions="actions" />
     </main>
@@ -149,12 +148,8 @@ watch(
   { immediate: true },
 )
 
-const { startHomeTour } = useHomeTour()
-
 onMounted(() => {
   window.addEventListener('resize', onResize)
-  // Start home tour for first-time visitors (deferred to let DOM settle)
-  nextTick(() => setTimeout(startHomeTour, 400))
 })
 onUnmounted(() => {
   window.removeEventListener('resize', onResize)

@@ -51,13 +51,5 @@ export function createPlausibleProvider(): IAnalyticsProvider {
     trackCtaClick(dateKey, linkUrl) {
       track('cta_click', { date_key: dateKey, link_url: linkUrl })
     },
-
-    trackTourStarted(tourName) {
-      track('tour_started', { tour_name: tourName })
-    },
-
-    trackTourCompleted(tourName) {
-      track('tour_completed', { tour_name: tourName })
-    },
   }
 }

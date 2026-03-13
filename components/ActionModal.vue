@@ -42,7 +42,6 @@
           <!-- Share + completion + close: upper right -->
           <div class="absolute top-2 right-2 flex items-center gap-1.5">
             <button
-              id="tour-action-share"
               class="rounded-full w-8 h-8 flex items-center justify-center hover:brightness-110 text-white transition-colors"
               :class="isShared(action.date) ? 'bg-state-complete' : 'bg-state-incomplete'"
               aria-label="Share"
@@ -63,7 +62,6 @@
               </svg>
             </button>
             <button
-              id="tour-action-complete"
               class="rounded-full w-8 h-8 flex items-center justify-center shadow transition-colors"
               :class="isComplete(action.date) ? 'bg-state-complete hover:brightness-110' : 'bg-state-incomplete hover:brightness-110'"
               :title="isComplete(action.date) ? 'Hold to mark incomplete' : 'Mark complete'"
@@ -123,7 +121,6 @@
           <!-- CTA link -->
           <a
             v-if="action.link_url && action.link_url !== '#'"
-            id="tour-action-cta"
             :href="action.link_url"
             target="_blank"
             rel="noopener noreferrer"
@@ -161,7 +158,7 @@
 
 <script setup lang="ts">
 import type { ActionItem } from '~/composables/googleSheets'
-import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import defaultImage from '~/assets/christy-dalmat-y_z3rURYpR0-unsplash.webp'
 import { formatDateKey } from '~/composables/dateHelpers'
 import { useActionCompletion } from '~/composables/useActionCompletion'
@@ -176,11 +173,9 @@ interface Props {
 const props = defineProps<Props>()
 const emit = defineEmits<{ close: [] }>()
 
-const { isComplete, toggleComplete, completedKeys } = useActionCompletion()
+const { isComplete, toggleComplete } = useActionCompletion()
 const { isShared, markShared, toggleShared } = useActionSharing()
 const { trackShareDetail, trackCompleteAction, trackUncompleteAction, trackCtaClick } = useAnalytics()
-const { startModalTour } = useModalTour()
-const { startShareTour } = useShareTour()
 const { settings } = useSettings()
 
 const holdShare = useHoldToUnset(() => {
@@ -202,10 +197,6 @@ function handleCompleteButtonClick(date: Date) {
   if (!isComplete(date)) {
     toggleComplete(date)
     trackCompleteAction(formatDateKey(date))
-    // On the very first completion ever, launch the share tour
-    if (completedKeys.value.size === 1 && !settings.value.tourSeenShare) {
-      nextTick(() => setTimeout(() => startShareTour('#tour-action-share'), 300))
-    }
   }
 }
 
@@ -273,8 +264,6 @@ function onKeydown(e: KeyboardEvent) {
 
 onMounted(() => {
   document.addEventListener('keydown', onKeydown)
-  // Start modal tour for first-time modal viewers (deferred to let DOM settle)
-  nextTick(() => setTimeout(startModalTour, 500))
 })
 onUnmounted(() => {
   document.removeEventListener('keydown', onKeydown)

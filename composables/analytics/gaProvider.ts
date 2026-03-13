@@ -48,13 +48,5 @@ export function createGaProvider(): IAnalyticsProvider {
     trackCtaClick(dateKey, linkUrl) {
       gtag('event', 'cta_click', { date_key: dateKey, link_url: linkUrl })
     },
-
-    trackTourStarted(tourName) {
-      gtag('event', 'tour_started', { tour_name: tourName })
-    },
-
-    trackTourCompleted(tourName) {
-      gtag('event', 'tour_completed', { tour_name: tourName })
-    },
   }
 }

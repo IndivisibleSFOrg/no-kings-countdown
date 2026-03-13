@@ -148,7 +148,6 @@ export default defineNuxtConfig({
 
   css: [
     '@/assets/css/main.css',
-    'driver.js/dist/driver.css',
   ],
 
   ssr: false,

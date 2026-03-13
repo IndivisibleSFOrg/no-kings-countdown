@@ -65,7 +65,6 @@
         <!-- Share + completion: upper right -->
         <div v-if="!isFuture" class="absolute top-2 right-2 flex items-center gap-1.5">
           <button
-            :id="`tour-card-share-${formatDateKey(action.date)}`"
             class="rounded-full w-7 h-7 flex items-center justify-center hover:brightness-110 text-white transition-colors"
             :class="isShared(action.date) ? 'bg-state-complete' : 'bg-state-incomplete'"
             aria-label="Share"
@@ -138,7 +137,6 @@
           <!-- Share + completion: upper right -->
           <div v-if="!isFuture || isDev" class="absolute top-2 right-2 flex items-center gap-1.5">
             <button
-              :id="`tour-card-share-${formatDateKey(action.date)}`"
               class="rounded-full w-7 h-7 flex items-center justify-center hover:brightness-110 text-white transition-colors"
               :class="isShared(action.date) ? 'bg-state-complete' : 'bg-state-incomplete'"
               aria-label="Share"
@@ -258,7 +256,7 @@
 
 <script setup lang="ts">
 import type { ActionItem } from '~/composables/googleSheets'
-import { computed, inject, nextTick, onUnmounted, ref } from 'vue'
+import { computed, inject, onUnmounted, ref } from 'vue'
 import defaultImage from '~/assets/christy-dalmat-y_z3rURYpR0-unsplash.webp'
 import { formatDateKey } from '~/composables/dateHelpers'
 import { useActionCompletion } from '~/composables/useActionCompletion'
@@ -283,10 +281,9 @@ const openDetail = inject<(action: ActionItem) => void>('openDetail', () => { })
 const _initToday = new Date()
 _initToday.setHours(0, 0, 0, 0)
 const isFlipped = ref(props.action.date <= _initToday)
-const { isComplete, toggleComplete, completedKeys } = useActionCompletion()
+const { isComplete, toggleComplete } = useActionCompletion()
 const { isShared, markShared, toggleShared } = useActionSharing()
 const { trackShareDetail, trackCompleteAction, trackUncompleteAction } = useAnalytics()
-const { startShareTour } = useShareTour()
 
 const holdShare = useHoldToUnset(() => {
   toggleShared(props.action.date)
@@ -353,10 +350,6 @@ function handleCompleteButtonClick(date: Date) {
   if (!isComplete(date)) {
     toggleComplete(date)
     trackCompleteAction(formatDateKey(date))
-    // On the very first completion ever, launch the share tour
-    if (completedKeys.value.size === 1 && !settings.value.tourSeenShare) {
-      nextTick(() => setTimeout(() => startShareTour(`#tour-card-share-${formatDateKey(date)}`), 300))
-    }
   }
 }
 
