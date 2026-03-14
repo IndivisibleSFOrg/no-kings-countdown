@@ -1,7 +1,6 @@
 <template>
   <AboutModal
     @close="navigateTo('/')"
-    @privacy="navigateTo('/privacy')"
   />
 </template>
 

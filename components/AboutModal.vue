@@ -100,5 +100,5 @@
 </template>
 
 <script setup lang="ts">
-const emit = defineEmits<{ close: [], privacy: [] }>()
+const emit = defineEmits<{ close: [] }>()
 </script>
