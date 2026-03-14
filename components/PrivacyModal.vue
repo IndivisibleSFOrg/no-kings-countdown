@@ -42,15 +42,6 @@
             >Plausible's data policy</a>.
           </p>
           <p class="text-isf-blue-dark text-base leading-relaxed">
-            This site also uses <strong>PostHog</strong> to record the same named interaction events (e.g. action
-            viewed, action completed). We have disabled PostHog's autocapture, session recording, and automatic
-            pageview features — PostHog only receives the explicit events we send. Data is sent to PostHog Inc. and
-            governed by <a
-              href="https://posthog.com/privacy"
-              target="_blank" rel="noopener" class="underline hover:text-isf-blue"
-            >PostHog's Privacy Policy</a>.
-          </p>
-          <p class="text-isf-blue-dark text-base leading-relaxed">
             <strong>We use these data solely to understand how many people visit and which content is most useful to
               users collectively — not to identify you, build profiles, or target advertising. We do not sell or share
               visitor data with anyone.</strong>
@@ -59,11 +50,9 @@
             To opt out: use <a
               href="https://tools.google.com/dlpage/gaoptout"
               target="_blank" rel="noopener" class="underline hover:text-isf-blue"
-            >Google's opt-out browser add-on</a> for Google Analytics; run
+            >Google's opt-out browser add-on</a> for Google Analytics; or run
             <code class="text-sm bg-isf-tinted px-1 rounded">localStorage.setItem('plausible_ignore','true')</code>
-            in your browser console to opt out of Plausible; or run
-            <code class="text-sm bg-isf-tinted px-1 rounded">posthog.opt_out_capturing()</code>
-            in your browser console to opt out of PostHog.
+            in your browser console to opt out of Plausible.
           </p>
           <p class="text-isf-blue-dark text-base leading-relaxed">
             Your action progress is saved locally on your device only and is transmitted only when you explicitly choose
