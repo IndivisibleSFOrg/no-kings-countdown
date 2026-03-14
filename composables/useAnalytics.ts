@@ -1,7 +1,6 @@
 import type { IAnalyticsProvider } from './analytics/types'
 import { createGaProvider } from './analytics/gaProvider'
 import { createPlausibleProvider } from './analytics/plausibleProvider'
-import { createPostHogProvider } from './analytics/posthogProvider'
 
 /**
  * Multicast analytics coordinator.
@@ -15,7 +14,7 @@ import { createPostHogProvider } from './analytics/posthogProvider'
  * Provider activation:
  *   GA        — config.public.gtag.id        (env: NUXT_PUBLIC_GTAG_ID, via nuxt-gtag module)
  *   Plausible — config.public.plausibleDomain (env: NUXT_PUBLIC_PLAUSIBLE_DOMAIN)
- *   PostHog   — config.public.posthogKey      (env: NUXT_PUBLIC_POSTHOG_KEY)
+ *   PostHog   — disabled; see archive/posthogProvider.ts.disabled and archive/posthog.client.ts.disabled
  */
 export function useAnalytics() {
   const config = useRuntimeConfig()
@@ -27,9 +26,6 @@ export function useAnalytics() {
 
   if (config.public.plausibleDomain)
     providers.push(createPlausibleProvider())
-
-  if (config.public.posthogKey)
-    providers.push(createPostHogProvider())
 
   /** Call fn on every active provider. */
   const call = (fn: (p: IAnalyticsProvider) => void) => {
