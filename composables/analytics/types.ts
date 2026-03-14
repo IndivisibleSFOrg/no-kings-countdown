@@ -25,6 +25,4 @@ export interface IAnalyticsProvider {
   trackShareDetail: (dateKey: string) => void
   trackShareProgress: () => void
   trackCtaClick: (dateKey: string, linkUrl: string) => void
-  trackTourStarted: (tourName: string) => void
-  trackTourCompleted: (tourName: string) => void
 }

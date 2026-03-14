@@ -13,7 +13,6 @@
         </p>
       </div>
       <button
-        id="tour-share-progress"
         class="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-btn-primary text-white text-sm font-semibold hover:bg-btn-primary-dark transition-colors whitespace-nowrap"
         @click="handleShare"
       >

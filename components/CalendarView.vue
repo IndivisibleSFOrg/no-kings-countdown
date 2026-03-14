@@ -125,11 +125,11 @@ onMounted(() => {
 .calendar-cell {
   aspect-ratio: 1;
   min-height: 150px;
+}
+
 .calendar-cell-empty {
   aspect-ratio: 1;
   min-height: 150px;
-}
-
 }
 
 @media (max-width: 768px) {
