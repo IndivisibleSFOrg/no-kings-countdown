@@ -95,9 +95,10 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   modules: [
-    '@nuxtjs/tailwindcss',
-    'nuxt-gtag',
     '@nuxtjs/plausible',
+    '@nuxtjs/tailwindcss',
+    '@vercel/analytics',
+    'nuxt-gtag',
   ],
 
   gtag: {

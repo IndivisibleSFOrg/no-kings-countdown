@@ -20,6 +20,7 @@
   "dependencies": {
     "@nuxt/image": "^1.8.1",
     "@nuxtjs/plausible": "^3.0.2",
+    "@vercel/analytics": "^2.0.1",
     "@yeger/vue-masonry-wall": "^5.0.15",
     "isomorphic-dompurify": "^3.3.0",
     "lucide-vue-next": "^0.460.0",
