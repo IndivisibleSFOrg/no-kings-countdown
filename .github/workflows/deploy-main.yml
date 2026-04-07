@@ -77,7 +77,7 @@ jobs:
 
       # Upload the pre-built output to Vercel as a preview deployment,
       # then alias it to the stable branch domain.
-      - name: Deploy to Vercel and alias to goodtroubledaily.org
+      - name: Deploy to Vercel and alias to main.goodtroubledaily.org
         run: |
           url=$(npx vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} \
             --meta githubCommitRef=main \
@@ -85,7 +85,7 @@ jobs:
             --meta githubOrg=${{ github.repository_owner }} \
             --meta githubRepo=${{ github.event.repository.name }} \
             --meta githubCommitAuthorLogin=${{ github.actor }})
-          npx vercel alias set "$url" goodtroubledaily.org --token=${{ secrets.VERCEL_TOKEN }}
+          npx vercel alias set "$url" main.goodtroubledaily.org --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

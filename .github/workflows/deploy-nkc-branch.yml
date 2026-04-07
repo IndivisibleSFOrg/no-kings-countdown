@@ -76,8 +76,9 @@ jobs:
           NUXT_PUBLIC_RUN_ID: ${{ github.run_id }}
 
       # Upload the pre-built output to Vercel as a preview deployment,
-      # then alias it to the stable branch domain.
-      - name: Deploy to Vercel and alias to nkc.nokingscountdown.org
+      # then alias it to nokingscountdown.org. This branch push IS the NKC
+      # deployment — no separate tag-triggered production workflow exists for NKC.
+      - name: Deploy to Vercel and alias to nokingscountdown.org
         run: |
           url=$(npx vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} \
             --meta githubCommitRef=no-kings-countdown \
@@ -85,7 +86,7 @@ jobs:
             --meta githubOrg=${{ github.repository_owner }} \
             --meta githubRepo=${{ github.event.repository.name }} \
             --meta githubCommitAuthorLogin=${{ github.actor }})
-          npx vercel alias set "$url" nkc.nokingscountdown.org --token=${{ secrets.VERCEL_TOKEN }}
+          npx vercel alias set "$url" nokingscountdown.org --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

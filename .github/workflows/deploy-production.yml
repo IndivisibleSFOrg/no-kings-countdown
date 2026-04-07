@@ -3,7 +3,7 @@ name: "Deploy to Vercel Production"
 on:
   push:
     tags:
-      - 'nkc/[0-9]+.[0-9]+.[0-9]+'  # matches nkc/x.y.z only (no-kings-countdown releases)
+      - '2.*.*'  # Good Trouble Daily releases (major version 2+); NKC uses 1.x.y on no-kings-countdown branch
 
 jobs:
   deploy:
