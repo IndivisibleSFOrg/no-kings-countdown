@@ -1,10 +1,10 @@
-# Verify PRs targeting main: typecheck + production build must pass.
+# Verify PRs targeting main or no-kings-countdown: typecheck + production build must pass.
 # Branch protection requires this workflow to succeed before merging.
 name: PR Check
 
 on:
   pull_request:
-    branches: ["main"]
+    branches: ["main", "no-kings-countdown"]
 
 jobs:
   check:

@@ -1,9 +1,9 @@
-name: "Deploy main branch to Vercel"
+name: "Deploy no-kings-countdown branch to Vercel"
 
 on:
   push:
     branches:
-      - main
+      - no-kings-countdown
 
 jobs:
   deploy:
@@ -71,21 +71,22 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           NUXT_PUBLIC_COMMIT_SHA: ${{ steps.version.outputs.describe }}
           NUXT_PUBLIC_COMMIT_SHORT_SHA: ${{ steps.version.outputs.short_sha }}
-          NUXT_PUBLIC_COMMIT_REF: main
+          NUXT_PUBLIC_COMMIT_REF: no-kings-countdown
           NUXT_PUBLIC_BUILD_DATE: ${{ github.event.head_commit.timestamp }}
           NUXT_PUBLIC_RUN_ID: ${{ github.run_id }}
 
       # Upload the pre-built output to Vercel as a preview deployment,
-      # then alias it to the stable branch domain.
-      - name: Deploy to Vercel and alias to main.goodtroubledaily.org
+      # then alias it to nokingscountdown.org. This branch push IS the NKC
+      # deployment — no separate tag-triggered production workflow exists for NKC.
+      - name: Deploy to Vercel and alias to nokingscountdown.org
         run: |
           url=$(npx vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} \
-            --meta githubCommitRef=main \
+            --meta githubCommitRef=no-kings-countdown \
             --meta githubCommitSha=${{ github.sha }} \
             --meta githubOrg=${{ github.repository_owner }} \
             --meta githubRepo=${{ github.event.repository.name }} \
             --meta githubCommitAuthorLogin=${{ github.actor }})
-          npx vercel alias set "$url" main.goodtroubledaily.org --token=${{ secrets.VERCEL_TOKEN }}
+          npx vercel alias set "$url" nokingscountdown.org --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

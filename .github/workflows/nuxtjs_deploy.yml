@@ -1,11 +1,10 @@
-# Workflow for building and deploying a Nuxt.js site to GitHub Pages
+# Disabled: GitHub Pages deployment replaced by Vercel as of 1.4.0 (2026-03-13).
+# See docs/decision-records/DR-0003-branching-and-deployment.md
+# This file is retained for reference and can be deleted.
 name: "Deploy to GitHub Pages"
 
 on:
-  push:
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  workflow_dispatch:  # manual trigger only; automatic push trigger removed
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:

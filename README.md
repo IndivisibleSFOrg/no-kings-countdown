@@ -15,7 +15,7 @@ The No Kings March is a nationwide mobilization to defend democratic norms and o
 ## For Developers
 
 **Stack:** Vue 3 · Nuxt 3 (static generation) · Tailwind CSS  
-**Issues:** [GitHub Issues](https://github.com/IndivisibleSFOrg/no-kings-countdown/issues)
+**Issues:** [GitHub Issues](https://github.com/IndivisibleSFOrg/good-trouble-daily/issues)
 
 ### How It Works
 
