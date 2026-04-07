@@ -35,3 +35,4 @@ archive
 .vscode
 .npmrc
 *.bak
+.worktrees
