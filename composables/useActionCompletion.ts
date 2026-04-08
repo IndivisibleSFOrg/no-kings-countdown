@@ -30,6 +30,7 @@ function load(slug: string, state: SlugState) {
       const legacy = localStorage.getItem(LEGACY_KEY)
       if (legacy !== null) {
         localStorage.setItem(key, legacy)
+        localStorage.removeItem(LEGACY_KEY)
         raw = legacy
       }
     }
