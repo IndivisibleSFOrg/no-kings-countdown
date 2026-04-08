@@ -60,7 +60,7 @@
         <!-- Footer -->
         <div class="px-5 py-3 border-t border-isf-tinted flex-shrink-0 flex items-center justify-between">
           <a
-            href="https://github.com/IndivisibleSFOrg/no-kings-countdown/releases"
+            href="https://github.com/reece/good-trouble-daily/releases"
             target="_blank" rel="noopener noreferrer"
             class="text-sm text-isf-slate underline hover:text-isf-blue transition-colors"
           >View detailed release notes →</a>

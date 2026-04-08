@@ -191,13 +191,18 @@ interface Props {
   open: boolean
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 const emit = defineEmits<{ close: [] }>()
 
 const { downloadIcs } = useIcsDownload()
 
+const lastActionDate = computed(() => {
+  const dates = props.actions.map(a => a.date)
+  return dates.length ? new Date(Math.max(...dates.map(d => d.getTime()))) : new Date()
+})
+
 function handleAddToCalendar() {
-  downloadIcs()
+  downloadIcs(lastActionDate.value)
   emit('close')
 }
 

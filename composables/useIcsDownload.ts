@@ -1,11 +1,11 @@
 // Generates and triggers a client-side download of a .ics calendar file
-// containing one VEVENT per remaining campaign day (today → March 28, 2026).
+// containing one VEVENT per remaining campaign day (today → campaignEnd).
 // Each event fires an 8am local-time reminder with a day-specific URL.
 export function useIcsDownload() {
   const { trackIcsDownload } = useAnalytics()
 
-  function downloadIcs() {
-    const CAMPAIGN_END = new Date(2026, 2, 28) // March 28, 2026
+  function downloadIcs(campaignEnd: Date) {
+    const CAMPAIGN_END = campaignEnd
 
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
 
@@ -30,21 +30,21 @@ export function useIcsDownload() {
       const dateKey = `${y}-${m}-${d}`
       const dtStart = `${y}${m}${d}T080000`
       const dtEnd = `${y}${m}${d}T081500`
-      const eventUrl = `https://nokingscountdown.org/?date=${dateKey}&utm_source=ics&utm_medium=calendar&utm_campaign=daily_reminder`
+      const eventUrl = `https://goodtroubledaily.org/?date=${dateKey}&utm_source=ics&utm_medium=calendar&utm_campaign=daily_reminder`
 
       events.push(
         [
           'BEGIN:VEVENT',
-          `UID:${dateKey}@nokingscountdown.org`,
+          `UID:${dateKey}@goodtroubledaily.org`,
           `DTSTAMP:${dtstamp}`,
-          'SUMMARY:No Kings Daily Action',
+          'SUMMARY:Good Trouble Daily Action',
           `DTSTART;TZID=${tz}:${dtStart}`,
           `DTEND;TZID=${tz}:${dtEnd}`,
           `DESCRIPTION:Today's action: ${eventUrl}`,
           'BEGIN:VALARM',
           'ACTION:DISPLAY',
           'TRIGGER:PT0S',
-          'DESCRIPTION:No Kings Daily Action',
+          'DESCRIPTION:Good Trouble Daily Action',
           'END:VALARM',
           'END:VEVENT',
         ].join('\r\n'),
@@ -54,8 +54,8 @@ export function useIcsDownload() {
     const ics = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//No Kings Countdown//nokingscountdown.org//EN',
-      'X-WR-CALNAME:No Kings Daily Reminders',
+      'PRODID:-//Good Trouble Daily//goodtroubledaily.org//EN',
+      'X-WR-CALNAME:Good Trouble Daily Reminders',
       `X-WR-TIMEZONE:${tz}`,
       'CALSCALE:GREGORIAN',
       'METHOD:PUBLISH',
@@ -70,7 +70,7 @@ export function useIcsDownload() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = 'no-kings-countdown.ics'
+    a.download = 'good-trouble-daily.ics'
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
