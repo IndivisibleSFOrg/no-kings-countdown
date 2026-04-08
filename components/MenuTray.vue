@@ -97,7 +97,7 @@
               </li>
               <li>
                 <a
-                  href="https://github.com/IndivisibleSFOrg/no-kings-countdown"
+                  href="https://github.com/reece/good-trouble-daily"
                   target="_blank" rel="noopener noreferrer"
                   class="tray-link"
                 >
@@ -106,7 +106,7 @@
               </li>
               <li>
                 <a
-                  href="https://github.com/IndivisibleSFOrg/no-kings-countdown/issues"
+                  href="https://github.com/reece/good-trouble-daily/issues"
                   target="_blank" rel="noopener noreferrer"
                   class="tray-link"
                 >
@@ -141,7 +141,7 @@
                   class="underline hover:text-isf-blue-dark transition-colors"
                 >{{ buildInfo.ref }}</a>
                 (<a
-                  :href="`https://github.com/IndivisibleSFOrg/no-kings-countdown/commit/${buildInfo.shortSha}`"
+                  :href="`https://github.com/reece/good-trouble-daily/commit/${buildInfo.shortSha}`"
                   target="_blank" rel="noopener noreferrer"
                   class="underline hover:text-isf-blue-dark transition-colors"
                 >{{ buildInfo.shortSha }}</a>{{ buildInfo.isDirty ? '+' : '' }})
@@ -220,10 +220,10 @@ const buildInfo = computed(() => {
     shortSha: resolvedShortSha,
     isDirty,
     refUrl: isTag
-      ? `https://github.com/IndivisibleSFOrg/no-kings-countdown/releases/tag/${ref}`
-      : `https://github.com/IndivisibleSFOrg/no-kings-countdown/tree/${ref}`,
+      ? `https://github.com/reece/good-trouble-daily/releases/tag/${ref}`
+      : `https://github.com/reece/good-trouble-daily/tree/${ref}`,
     date: `${datePart} ${timePart.slice(0, 5)} UTC`,
-    runUrl: runId ? `https://github.com/IndivisibleSFOrg/no-kings-countdown/actions/runs/${runId}` : null,
+    runUrl: runId ? `https://github.com/reece/good-trouble-daily/actions/runs/${runId}` : null,
   }
 })
 

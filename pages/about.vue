@@ -5,5 +5,5 @@
 </template>
 
 <script setup lang="ts">
-useHead({ title: 'About — No Kings Countdown' })
+useHead({ title: 'About — Good Trouble Daily' })
 </script>

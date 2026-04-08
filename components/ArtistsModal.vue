@@ -32,7 +32,7 @@
         <!-- Body -->
         <div class="px-5 py-5 overflow-y-auto">
           <p class="text-isf-blue-dark text-sm leading-relaxed mb-4">
-            The images in this countdown were created by these artists. Click a name to visit their profile or portfolio.
+            The images in this app were created by these artists. Click a name to visit their profile or portfolio.
           </p>
 
           <div v-if="artists.length" class="grid grid-cols-2 gap-x-4 gap-y-2">

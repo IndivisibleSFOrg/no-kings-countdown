@@ -366,7 +366,7 @@ function handleShareButtonClick() {
 
 async function shareAction() {
   trackShareDetail(formatDateKey(props.action.date))
-  const shareTitle = `No Kings Countdown: ${props.action.headline}`
+  const shareTitle = `Good Trouble Daily: ${props.action.headline}`
   const shareText = props.action.social_message || props.action.details || ''
   const _url = new URL(window.location.href)
   _url.search = ''
@@ -405,7 +405,7 @@ async function shareAction() {
 function withUtm(url: string): string {
   try {
     const u = new URL(url)
-    u.searchParams.set('utm_source', 'nokingscountdown.org')
+    u.searchParams.set('utm_source', 'goodtroubledaily.org')
     return u.toString()
   }
   catch {

@@ -10,7 +10,7 @@
         <!-- Header -->
         <div class="flex items-center justify-between px-5 py-4 border-b border-isf-tinted flex-shrink-0">
           <h2 class="font-bold text-isf-blue-dark text-lg">
-            About No Kings Countdown
+            About Good Trouble Daily
           </h2>
           <button
             class="text-isf-slate hover:text-isf-blue-dark bg-transparent rounded-full p-1.5 transition-colors"
@@ -29,12 +29,7 @@
         <!-- Body -->
         <div class="px-5 py-5 space-y-4 overflow-y-auto">
           <p class="text-isf-blue-dark text-base leading-relaxed">
-            The <a
-              href="https://nokings.org/" target="_blank" rel="noopener noreferrer"
-              class="underline hover:text-isf-blue"
-            >No Kings</a> march is a nationwide mobilization to defend democratic
-            norms and oppose authoritarian overreach. This app helps people show up for the cause every day in the weeks
-            leading up to the march — not just on the day itself.
+            Good Trouble Daily is a civic action calendar that helps you build a lasting daily habit of resistance. One short, meaningful action every day — because sustained engagement is how democratic norms are defended and communities are strengthened.
           </p>
           <p class="text-isf-blue-dark text-base leading-relaxed">
             Each day unlocks one short, meaningful action: calling a representative, sharing a message, supporting an

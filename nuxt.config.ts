@@ -117,25 +117,25 @@ export default defineNuxtConfig({
   app: {
     baseURL: process.env.NUXT_APP_BASE_URL || '/',
     head: {
-      title: 'No Kings Countdown: Daily actions to build community engagement',
+      title: 'Good Trouble Daily: Build a habit of civic resistance',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'A daily action calendar counting down to the No Kings March on March 28, 2026' },
+        { name: 'description', content: 'A daily calendar for building a habit of civic resistance — one action, under 15 minutes, every day' },
         // OpenGraph
         { property: 'og:type', content: 'website' },
-        { property: 'og:url', content: 'https://nokingscountdown.org/' },
-        { property: 'og:title', content: 'No Kings Countdown: Daily actions to build community engagement' },
-        { property: 'og:description', content: 'A daily action calendar counting down to the No Kings March on March 28, 2026' },
-        { property: 'og:image', content: 'https://nokingscountdown.org/og-image.webp' },
+        { property: 'og:url', content: 'https://goodtroubledaily.org/' },
+        { property: 'og:title', content: 'Good Trouble Daily: Build a habit of civic resistance' },
+        { property: 'og:description', content: 'A daily calendar for building a habit of civic resistance — one action, under 15 minutes, every day' },
+        { property: 'og:image', content: 'https://goodtroubledaily.org/og-image.webp' },
         { property: 'og:image:width', content: '1424' },
         { property: 'og:image:height', content: '752' },
         // Twitter Card
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:url', content: 'https://nokingscountdown.org/' },
-        { name: 'twitter:title', content: 'No Kings Countdown: Daily actions to build community engagement' },
-        { name: 'twitter:description', content: 'A daily action calendar counting down to the No Kings March on March 28, 2026' },
-        { name: 'twitter:image', content: 'https://nokingscountdown.org/og-image.webp' },
+        { name: 'twitter:url', content: 'https://goodtroubledaily.org/' },
+        { name: 'twitter:title', content: 'Good Trouble Daily: Build a habit of civic resistance' },
+        { name: 'twitter:description', content: 'A daily calendar for building a habit of civic resistance — one action, under 15 minutes, every day' },
+        { name: 'twitter:image', content: 'https://goodtroubledaily.org/og-image.webp' },
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },

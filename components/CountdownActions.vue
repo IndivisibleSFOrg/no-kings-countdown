@@ -15,10 +15,10 @@
         <!-- Hero text -->
         <div>
           <h1 class="font-sans text-4xl font-black text-isf-blue leading-tight mb-1">
-            No Kings 3 Countdown
+            Good Trouble Daily
           </h1>
           <p class="text-base text-isf-blue">
-            Create a daily habit of small actions with big impacts that build momentum toward <a href="https://nokings.org/" target="_blank" rel="noopener noreferrer" class="font-bold underline hover:text-isf-blue transition-colors">No Kings 3</a> on March 28. <br>Track and share your progress to help build the community that will repel authoritarianism in the United States.
+            Build a daily habit of civic resistance — one small action, under 15 minutes, every day. Track and share your progress to help grow the community standing up for democracy.
           </p>
         </div>
       </div>

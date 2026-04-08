@@ -199,7 +199,7 @@ const _emojiGrid = computed(() => {
 })
 
 const shareText = computed(() =>
-  `No Kings Countdown ✊\n${completedCount.value}/${totalAvailable.value} civic actions completed so far\n\nJoin me! https://nokingscountdown.org?utm_source=share&utm_campaign=progress`,
+  `Good Trouble Daily ✊\n${completedCount.value}/${totalAvailable.value} civic actions completed so far\n\nJoin me! https://goodtroubledaily.org?utm_source=share&utm_campaign=progress`,
 )
 
 // ── Share handler ─────────────────────────────────────────────────────────
