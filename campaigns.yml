@@ -7,3 +7,14 @@ no-kings-countdown:
   actions_url: https://docs.google.com/spreadsheets/d/1LBJiAlm4tKg9nYosVB98t4lW59QJYBYCkZArwWyygTQ/export?format=csv&gid=1665550594
   banner_image_url:
   favicon_url: /campaigns/no-kings-countdown/favicon.ico
+
+mayday26:
+  name: May Day 2026
+  domains:
+    - mayday26.goodtroubledaily.org
+  description: |-
+    Get ready for May Day 2026 with a daily countdown of actions to take in the lead-up to the big day. Each action is designed to be completed in under 15 minutes, making it easy for everyone to participate and make a difference.
+  actions_url: https://docs.google.com/spreadsheets/d/1JOWTrebyGZIqcwRRRrKbIktzyny4XlDDsUFvaVIENC4/export?format=csv&gid=1665550594
+  banner_image_url:
+  favicon_url: /campaigns/mayday26/favicon.ico
+
