@@ -1,6 +1,7 @@
 import { execSync } from 'node:child_process'
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
+import { loadCampaigns } from './utils/loadCampaigns'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import 'dotenv/config'
 
@@ -83,12 +84,7 @@ const appVersion = (() => {
   return m ? m[1] : `${appMajorMinor}.0`
 })()
 
-const sheetUrl = (() => {
-  const url = process.env.NUXT_PUBLIC_SHEET_URL
-  if (!url)
-    throw new Error('NUXT_PUBLIC_SHEET_URL is required — set it in .env')
-  return url
-})()
+const { campaigns, domainToSlug } = loadCampaigns()
 
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
@@ -138,7 +134,7 @@ export default defineNuxtConfig({
         { name: 'twitter:image', content: 'https://goodtroubledaily.org/og-image.webp' },
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'icon', href: '/favicon.ico' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         {
@@ -174,7 +170,6 @@ export default defineNuxtConfig({
       commitRef: process.env.NUXT_PUBLIC_COMMIT_REF || gitBranch,
       buildDate: process.env.NUXT_PUBLIC_BUILD_DATE || new Date().toISOString(),
       runId: process.env.NUXT_PUBLIC_RUN_ID || '',
-      sheetUrl,
       // Analytics provider activation keys — empty string disables the provider.
       // GA is activated via nuxt-gtag's own runtimeConfig (public.gtag.id).
       plausibleDomain: process.env.NUXT_PUBLIC_PLAUSIBLE_DOMAIN || '',
@@ -184,6 +179,9 @@ export default defineNuxtConfig({
       appMajorMinor,
       appVersion,
       githubRepoUrl: 'https://github.com/reece/good-trouble-daily',
+      // Campaign configuration loaded from campaigns.yml at build time.
+      campaigns,
+      domainToSlug,
     },
   },
 })

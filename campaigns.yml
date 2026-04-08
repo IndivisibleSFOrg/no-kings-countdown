@@ -1,0 +1,9 @@
+no-kings-countdown:
+  name: No Kings Countdown
+  domains:
+    - nokingscountdown.org
+  description: |-
+    A countdown of daily civic actions for the No Kings movement — one action, under 15 minutes, every day.
+  actions_url: https://docs.google.com/spreadsheets/d/1LBJiAlm4tKg9nYosVB98t4lW59QJYBYCkZArwWyygTQ/export?format=csv&gid=1665550594
+  banner_image_url:
+  favicon_url: /campaigns/no-kings-countdown/favicon.ico

@@ -20,7 +20,7 @@ One action, completable in under 15 minutes, every day: calling a representative
 ### How It Works
 
 - Action data lives in a Google Sheet published as a CSV; the app fetches and caches it for 10 minutes
-- Completion state is stored in `localStorage` under `isf-completed-actions` (a JSON array of `YYYY-MM-DD` strings)
+- Completion state is stored in `localStorage` under `<campaign-slug>/completed-actions` (a JSON array of `YYYY-MM-DD` strings); sharing state under `<campaign-slug>/shared-actions`. Existing NKC users' data is migrated from the legacy `isf-completed-actions` / `isf-shared-actions` keys on first load.
 - Statically generated and deployed to Vercel — no backend, no database
 
 ### Setup
@@ -48,6 +48,24 @@ All deployments run via GitHub Actions (Vercel's native GitHub integration is di
 | Push of tag matching `1.*.*` | `nokingscountdown.org` |
 | Push to `no-kings-countdown` | `preview.nokingscountdown.org` |
 | PR opened / synchronized | ephemeral preview URL (posted as PR comment) |
+
+### Adding a Campaign
+
+1. Add an entry to `campaigns.yml` in the project root:
+   ```yaml
+   my-campaign:
+     name: My Campaign
+     domains:         # zero or more custom domains; list www. variants explicitly if needed
+       - mycampaign.org
+     description: |-
+       A short description shown on campaign pages.
+     actions_url: https://docs.google.com/spreadsheets/d/.../export?format=csv&gid=...
+     banner_image_url:   # optional, reserved for future use
+   ```
+2. If the campaign has a custom domain, add that domain to the Vercel project's
+   **Domains** settings so Vercel routes requests to the deployment.
+3. Commit and deploy — `campaigns.yml` is infra config tracked in git, so a
+   redeploy is required for domain changes to take effect.
 
 ### Contributing Code
 

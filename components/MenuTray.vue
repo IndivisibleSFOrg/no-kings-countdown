@@ -76,22 +76,22 @@
             </h3>
             <ul class="space-y-0.5">
               <li>
-                <NuxtLink to="/about" class="tray-link" @click="emit('close')">
+                <NuxtLink :to="`${navigationBase}/about`" class="tray-link" @click="emit('close')">
                   About
                 </NuxtLink>
               </li>
               <li>
-                <NuxtLink to="/artists" class="tray-link" @click="emit('close')">
+                <NuxtLink :to="`${navigationBase}/artists`" class="tray-link" @click="emit('close')">
                   Contributing Artists
                 </NuxtLink>
               </li>
               <li>
-                <NuxtLink to="/privacy" class="tray-link" @click="emit('close')">
+                <NuxtLink :to="`${navigationBase}/privacy`" class="tray-link" @click="emit('close')">
                   Privacy Policy
                 </NuxtLink>
               </li>
               <li>
-                <NuxtLink to="/releases" class="tray-link" @click="emit('close')">
+                <NuxtLink :to="`${navigationBase}/releases`" class="tray-link" @click="emit('close')">
                   Release Notes
                 </NuxtLink>
               </li>
@@ -195,6 +195,8 @@ const props = defineProps<Props>()
 const emit = defineEmits<{ close: [] }>()
 
 const { downloadIcs } = useIcsDownload()
+const campaignRoute = useCampaignRoute()
+const navigationBase = campaignRoute.navigationBase
 
 const lastActionDate = computed(() => {
   const dates = props.actions.map(a => a.date)
@@ -206,7 +208,10 @@ function handleAddToCalendar() {
   emit('close')
 }
 
-const { fetchedAt, loadData } = useGoogleSheetsData()
+const { fetchedAt, loadData } = useGoogleSheetsData(
+  campaignRoute.slug.value,
+  campaignRoute.campaign.value?.actions_url ?? '',
+)
 
 const config = useRuntimeConfig()
 const repoUrl = config.public.githubRepoUrl as string

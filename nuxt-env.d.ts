@@ -4,6 +4,8 @@ declare module 'nuxt/schema' {
   interface PublicRuntimeConfig {
     appMajorMinor: string
     releaseVersionIndex: { version: string, date: string }[]
+    campaigns: Record<string, import('./types/campaign').Campaign>
+    domainToSlug: Record<string, string>
   }
 }
 

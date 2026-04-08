@@ -23,6 +23,7 @@
     "@vercel/analytics": "^2.0.1",
     "@yeger/vue-masonry-wall": "^5.0.15",
     "isomorphic-dompurify": "^3.3.0",
+    "js-yaml": "^4.1.1",
     "lucide-vue-next": "^0.460.0",
     "marked": "^17.0.3",
     "nuxt": "^3.14.1592",
@@ -34,6 +35,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "^7.6.1",
     "@nuxtjs/tailwindcss": "^6.12.2",
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^20",
     "@types/papaparse": "^5.5.2",
     "eslint": "^9",
