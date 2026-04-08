@@ -18,14 +18,15 @@ import { createPlausibleProvider } from './analytics/plausibleProvider'
  */
 export function useAnalytics() {
   const config = useRuntimeConfig()
+  const { slug } = useCampaignRoute()
 
   const providers: IAnalyticsProvider[] = []
 
   if ((config.public.gtag as { id?: string } | undefined)?.id)
-    providers.push(createGaProvider())
+    providers.push(createGaProvider(slug.value))
 
   if (config.public.plausibleDomain)
-    providers.push(createPlausibleProvider())
+    providers.push(createPlausibleProvider(slug.value))
 
   /** Call fn on every active provider. */
   const call = (fn: (p: IAnalyticsProvider) => void) => {
