@@ -68,10 +68,11 @@ export function toCountdownItem(item: ActionCSVItem): ActionItem | null {
   }
 }
 
-export async function fetchCountdownItems(): Promise<ActionItem[]> {
-  const { public: { sheetUrl } } = useRuntimeConfig()
+export async function fetchCountdownItems(url: string): Promise<ActionItem[]> {
+  if (!url)
+    return []
   try {
-    const response = await fetch(sheetUrl, {
+    const response = await fetch(url, {
       cache: 'no-cache',
       redirect: 'follow',
     })

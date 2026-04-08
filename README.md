@@ -49,6 +49,24 @@ All deployments run via GitHub Actions (Vercel's native GitHub integration is di
 | Push to `no-kings-countdown` | `preview.nokingscountdown.org` |
 | PR opened / synchronized | ephemeral preview URL (posted as PR comment) |
 
+### Adding a Campaign
+
+1. Add an entry to `campaigns.yml` in the project root:
+   ```yaml
+   my-campaign:
+     name: My Campaign
+     domains:         # zero or more custom domains; list www. variants explicitly if needed
+       - mycampaign.org
+     description: |-
+       A short description shown on campaign pages.
+     actions_url: https://docs.google.com/spreadsheets/d/.../export?format=csv&gid=...
+     banner_image_url:   # optional, reserved for future use
+   ```
+2. If the campaign has a custom domain, add that domain to the Vercel project's
+   **Domains** settings so Vercel routes requests to the deployment.
+3. Commit and deploy — `campaigns.yml` is infra config tracked in git, so a
+   redeploy is required for domain changes to take effect.
+
 ### Contributing Code
 
 1. Fork the repo and create a feature branch

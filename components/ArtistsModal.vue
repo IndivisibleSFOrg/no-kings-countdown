@@ -69,7 +69,8 @@ import { computed, onMounted, onUnmounted } from 'vue'
 
 const emit = defineEmits<{ close: [] }>()
 
-const { communityActions } = useGoogleSheetsData()
+const { slug, campaign } = useCampaignRoute()
+const { communityActions } = useGoogleSheetsData(slug.value, campaign.value?.actions_url ?? '')
 
 interface Artist {
   name: string

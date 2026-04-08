@@ -15,7 +15,7 @@
         <!-- Hero text -->
         <div>
           <h1 class="font-sans text-4xl font-black text-isf-blue leading-tight mb-1">
-            Good Trouble Daily
+            {{ campaign?.name ?? 'Good Trouble Daily' }}
           </h1>
           <p class="text-base text-isf-blue">
             Build a daily habit of civic resistance — one small action, under 15 minutes, every day. Track and share your progress to help grow the community standing up for democracy.
@@ -66,6 +66,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const { campaign } = useCampaignRoute()
 const router = useRouter()
 const route = useRoute()
 
