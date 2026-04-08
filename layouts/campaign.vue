@@ -26,6 +26,11 @@ const props = defineProps<{ campaignSlug?: string }>()
 const { campaign, slug, navigationBase } = useCampaignRoute(props.campaignSlug)
 const actionsUrl = computed(() => campaign.value?.actions_url ?? '')
 
+useHead(computed(() => campaign.value?.favicon_url
+  ? { link: [{ rel: 'icon', type: 'image/x-icon', href: campaign.value.favicon_url }] }
+  : {},
+))
+
 const { communityActions, loadData } = useGoogleSheetsData(slug.value, actionsUrl.value)
 const visibleActions = useVisibleActions(communityActions)
 const { trackFirstVisit } = useAnalytics()

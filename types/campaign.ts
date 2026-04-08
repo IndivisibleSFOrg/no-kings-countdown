@@ -4,4 +4,5 @@ export interface Campaign {
   description: string
   actions_url: string
   banner_image_url?: string
+  favicon_url?: string
 }
