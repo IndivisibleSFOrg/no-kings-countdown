@@ -42,7 +42,7 @@ const showReleaseModal = ref(false)
 onMounted(() => {
   if (actionsUrl.value)
     loadData()
-  trackFirstVisit()
+  trackFirstVisit(slug.value)
   const releasesPath = `${navigationBase.value}/releases`
   if (route.path !== releasesPath) {
     showReleaseModal.value = shouldShowReleaseNotes.value

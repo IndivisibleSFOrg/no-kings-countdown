@@ -40,14 +40,14 @@ export function useAnalytics() {
   }
 
   /**
-   * Fire once per device on true first visit (localStorage-backed guard lives
-   * here so all providers fire together on the same first visit, and none can
-   * accidentally set a flag that prevents the others from firing).
+   * Fire once per device per campaign on true first visit (localStorage-backed
+   * guard lives here so all providers fire together on the same first visit,
+   * and none can accidentally set a flag that prevents the others from firing).
    */
-  const trackFirstVisit = () => {
+  const trackFirstVisit = (slug: string) => {
     if (!import.meta.client)
       return
-    const key = 'isf-visited'
+    const key = `${slug}/visited`
     if (!localStorage.getItem(key)) {
       const visitDate = new Date().toISOString().slice(0, 10)
       localStorage.setItem(key, new Date().toISOString())
